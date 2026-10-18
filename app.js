@@ -9,7 +9,7 @@ const show=h=>{$('#main').innerHTML=h;icons()};
 const crumb=a=>`<nav class="text-sm mu mb-4 flex gap-2 flex-wrap"><a href="#/" class="hover:underline">الرئيسية</a>${a.map(([t,h])=>`<span>›</span>${h?`<a class="hover:underline" href="${h}">${esc(t)}</a>`:`<span>${esc(t)}</span>`}`).join('')}</nav>`;
 
 /* ---------- Auth ---------- */
-const authV=()=>`<div class="card p-6 max-w-md mx-auto mt-6"><div class="text-center mb-4"><div class="ic mx-auto mb-2" style="background:var(--acs)"><i data-lucide="graduation-cap" class="ac"></i></div><h1 class="font-extrabold text-xl">${mode==='login'?'تسجيل الدخول':'إنشاء حساب طالب'}</h1></div>
+const authV=()=>`<div class="card p-6 max-w-md mx-auto mt-6"><div class="text-center mb-4"><img src="logo.png" alt="" width="84" height="84" class="mx-auto mb-2" style="border-radius:20px"><h1 class="font-extrabold text-xl">${mode==='login'?'تسجيل الدخول':'إنشاء حساب طالب'}</h1></div>
 ${mode==='signup'?'<label>الاسم الكامل</label><input id="a-n"><label>رقم الهاتف</label><input id="a-p" dir="ltr" type="tel" placeholder="05xxxxxxxx">':''}
 <label>البريد الإلكتروني</label><input id="a-e" dir="ltr" type="email"><label>كلمة المرور (6 أحرف على الأقل)</label><input id="a-w" dir="ltr" type="password">
 <button class="btn p w-full justify-center" data-act="${mode}">${mode==='login'?'دخول':'تسجيل'}</button>
@@ -78,5 +78,5 @@ addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#inst').cl
 if(/iphone|ipad/i.test(navigator.userAgent)&&!navigator.standalone)$('#inst').classList.remove('hidden');
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 icons();
-if(CFG.URL.includes('YOUR-PROJECT'))show('<div class="card p-6 max-w-lg mx-auto"><h1 class="font-bold text-lg mb-2">لم يتم ضبط Supabase بعد</h1><p class="mu">عدّل js/config.js بالرابط والمفتاح، وشغّل supabase/schema.sql. راجع README.md.</p></div>');
+if(CFG.URL.includes('YOUR-PROJECT'))show('<div class="card p-6 max-w-lg mx-auto"><h1 class="font-bold text-lg mb-2">لم يتم ضبط Supabase بعد</h1><p class="mu">عدّل config.js بالرابط والمفتاح، وشغّل schema.sql. راجع README.md.</p></div>');
 else sb.auth.getSession().then(r=>enter(r.data.session));
