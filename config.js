@@ -1,1 +1,2 @@
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.window.CFG = { URL: 'https://lxrnoffphhmtpbexpvlf.supabase.co', KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4cm5vZmZwaGhtdHBiZXhwdmxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzMTU2OTgsImV4cCI6MjEwNzg5MTY5OH0.5A_kqiSvQaEGwpwjC9OmgDz7NkeVHJ_J7e4NUTWOEBg' };
+// من Supabase: Project Settings > API
+window.CFG = { URL: 'https://YOUR-PROJECT.supabase.co', KEY: 'YOUR-ANON-PUBLIC-KEY' };
