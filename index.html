@@ -3,27 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Al-Me'raj Digital Academy</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<title>أكاديمية المعراج الرقمي | Al-Me'raj Digital Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0a2d69">
-<meta name="apple-mobile-web-app-title" content="Al-Me’raj">
+<meta name="theme-color" content="#0a1128">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Al-Me’raj">
 <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
-<header class="sticky z-30 border-b" style="top:env(safe-area-inset-top,0px);background:var(--sf);border-color:var(--bd)">
-<div class="max-w-5xl mx-auto flex items-center gap-3 px-4 py-3">
-<a href="#/" class="flex items-center gap-2 font-extrabold text-lg flex-1 ac" dir="ltr" style="justify-content:flex-end;flex-direction:row-reverse"><span>Al-Me’raj Digital Academy</span><img src="logo.png" alt="" width="36" height="36" style="border-radius:9px"></a>
-<button class="btn" data-act="theme" aria-label="الوضع"><i data-lucide="moon"></i></button>
-<button class="btn hidden" id="inst" data-act="install"><i data-lucide="download"></i><span class="hidden sm:inline">تثبيت</span></button><a class="btn hidden" id="adm" href="#/admin"><i data-lucide="settings"></i><span class="hidden sm:inline">الإدارة</span></a><button class="btn hidden" id="lo" data-act="logout"><i data-lucide="log-out"></i><span class="hidden sm:inline">خروج</span></button>
+<header class="navbar"><div class="nav-in">
+<a href="#/" class="logo-brand" data-act="go" data-id="home"><img src="logo.png" alt="" width="40" height="40"><span class="brand-text"><span class="brand-title">أكاديمية المعراج الرقمي</span><span class="brand-subtitle">Al-Me'raj Digital Academy</span></span></a>
 </div></header>
-<main id="main" class="max-w-5xl mx-auto px-4 py-6"></main>
-<div id="modal" class="hidden fixed inset-0 z-50 bg-black/60 p-3 sm:p-8"><div class="card h-full flex flex-col overflow-hidden"><div class="flex items-center gap-2 p-3 border-b" style="border-color:var(--bd)"><b id="mt" class="flex-1"></b><a id="mo" target="_blank" rel="noopener" class="btn p"><i data-lucide="external-link"></i>فتح في تبويب جديد</a><button class="btn" data-act="close"><i data-lucide="x"></i></button></div><iframe id="mf" class="flex-1 w-full bg-white"></iframe></div></div>
+<main id="main" class="wrap"></main>
+<nav class="dock" aria-label="التنقل">
+<button class="dk si hidden" data-act="go" data-id="home"><i data-lucide="house"></i><span>الرئيسية</span></button>
+<button class="dk si hidden" data-act="go" data-id="courses"><i data-lucide="graduation-cap"></i><span>الكورسات</span></button>
+<button class="dk si hidden" data-act="go" data-id="about"><i data-lucide="info"></i><span>عن الأكاديمية</span></button>
+<a class="dk hidden" id="adm" href="#/admin"><i data-lucide="layout-dashboard"></i><span>الإدارة</span></a>
+<button class="dk hidden" id="inst" data-act="install"><i data-lucide="download"></i><span>تثبيت</span></button>
+<button class="dk si hidden" id="lo" data-act="logout"><i data-lucide="log-out"></i><span>خروج</span></button>
+</nav>
+<div id="modal" class="mdl hidden"><div class="mdl-in"><div class="mdl-h"><b id="mt"></b><a id="mo" target="_blank" rel="noopener" class="btn p"><i data-lucide="external-link"></i><span>فتح في تبويب</span></a><button class="btn" data-act="close" aria-label="إغلاق"><i data-lucide="x"></i></button></div><iframe id="mf" title="viewer"></iframe></div></div>
 <div id="tc"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
