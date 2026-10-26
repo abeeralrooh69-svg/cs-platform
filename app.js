@@ -1,30 +1,81 @@
-// التبديل بين الشاشات
-function switchTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-    
-    document.getElementById(`tab-${tabId}`).classList.add('active');
-    event.target.classList.add('active');
+// ==========================================
+// نظام إدارة المحتوى - أكاديمية المعراج الرقمية
+// ==========================================
+
+// الهيكل الأساسي لتخزين الكورسات والدروس في المحفوظات المحلية (LocalStorage)
+let coursesData = JSON.parse(localStorage.getItem('almeraj_courses')) || [];
+
+// 1. حفظ البيانات
+function saveCoursesToStorage() {
+    localStorage.setItem('almeraj_courses', JSON.stringify(coursesData));
+    renderCoursesAdminList();
 }
 
-// حفظ الدرس والوسائل
-document.getElementById('add-lesson-form')?.addEventListener('submit', function(e) {
-    e.preventDefault();
+// 2. إضافة كورس جديد
+function addCourse(title, description, category) {
+    const newCourse = {
+        id: 'course_' + Date.now(),
+        title: title,
+        description: description,
+        category: category,
+        units: []
+    };
+    coursesData.push(newCourse);
+    saveCoursesToStorage();
+    alert('تم إضافة الكورس بنجاح!');
+}
 
-    const lessonData = {
-        course: document.getElementById('course-name').value,
-        unit: document.getElementById('unit-name').value,
-        title: document.getElementById('lesson-title').value,
-        media: {
-            pdf: document.getElementById('pdf-url').value || document.getElementById('pdf-file').files[0]?.name,
-            video: document.getElementById('video-url').value || document.getElementById('video-file').files[0]?.name,
-            mindmap: document.getElementById('mindmap-url').value || document.getElementById('mindmap-file').files[0]?.name,
-            terms: document.getElementById('terms-url').value || document.getElementById('terms-file').files[0]?.name,
-            questions: document.getElementById('questions-url').value || document.getElementById('questions-file').files[0]?.name,
-            quiz: document.getElementById('quiz-url').value || document.getElementById('quiz-file').files[0]?.name
+// 3. إضافة وحدة دراسية داخل كورس معين
+function addUnit(courseId, unitTitle) {
+    const course = coursesData.find(c => c.id === courseId);
+    if (course) {
+        const newUnit = {
+            id: 'unit_' + Date.now(),
+            title: unitTitle,
+            lessons: []
+        };
+        course.units.push(newUnit);
+        saveCoursesToStorage();
+        alert('تمت إضافة الوحدة الدراسية!');
+    }
+}
+
+// 4. إضافة درس مع الوسائل التعليمية الستة (ملف أو رابط)
+function addLesson(courseId, unitId, lessonTitle, resources) {
+    const course = coursesData.find(c => c.id === courseId);
+    if (!course) return;
+    const unit = course.units.find(u => u.id === unitId);
+    if (!unit) return;
+
+    const newLesson = {
+        id: 'lesson_' + Date.now(),
+        title: lessonTitle,
+        // الوسائل التعليمية الستة:
+        resources: {
+            pdf: resources.pdf || '',           // مستند PDF / ملخص
+            video: resources.video || '',       // فيديو تعليمي / رابط
+            presentation: resources.presentation || '', // عرض تقديمي
+            worksheet: resources.worksheet || '',   // ورقة عمل / أسئلة
+            mindmap: resources.mindmap || '',     // خريطة ذهنية
+            flashcards: resources.flashcards || ''  // بطاقات تعليمية
         }
     };
 
-    alert(`تم حفظ ونشر الدرس: "${lessonData.title}" بنجاح وتجهيز الوسائل التعليمية الست!`);
-    this.reset();
-});
+    unit.lessons.push(newLesson);
+    saveCoursesToStorage();
+    alert('تم إضافة الدرس بالوسائل التعليمية بنجاح!');
+}
+
+// 5. دالة قراءة وتمرير الملف المرفوع وتحويله إلى Base64 أو رابط مؤقت
+function handleFileUpload(fileInput, callback) {
+    const file = fileInput.files[0];
+    if (!file) {
+        callback('');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        callback(e.target.result); // يُرجع رابط البيانات (Base64) الخاص بالملف
+    };
+    reader.readAsDataURL(file);
+}
