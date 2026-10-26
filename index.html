@@ -1,49 +1,72 @@
-<!-- قسم لوحة الإدارة -->
-<section id="admin-panel" class="admin-section" style="padding: 20px; color: #fff;">
+<!-- 1. شريط التنقل الثابت (يظهر دائماً ولن يختفي) -->
+<nav class="navigation-bar" style="position: sticky; top: 0; z-index: 1000; background: #0b132b; padding: 12px; display: flex; justify-content: center; gap: 15px;">
+    <button onclick="showTab('home-section')" style="padding: 8px 16px; cursor: pointer;">الرئيسية</button>
+    <button onclick="showTab('about-section')" style="padding: 8px 16px; cursor: pointer;">من نحن</button>
+    <button onclick="showTab('courses-section')" style="padding: 8px 16px; cursor: pointer;">الكورسات</button>
+    <!-- زر الإدارة: مخفي عن الطلاب وسيظهر تلقائياً لإيميلات الإدارة فقط -->
+    <button onclick="showTab('admin-section')" class="admin-tab-btn" style="display: none; padding: 8px 16px; background: #d9534f; color: white; border: none; border-radius: 4px; cursor: pointer;">لوحة الإدارة</button>
+</nav>
+
+<!-- 2. محتوى الأقسام (تظهر حسب التبويب المختار) -->
+
+<!-- قسم الرئيسية -->
+<div id="home-section" class="tab-content" style="display: block;">
+    <!-- اترك محتوى الصفحة الرئيسية القديم هنا كما هو -->
+</div>
+
+<!-- قسم من نحن -->
+<div id="about-section" class="tab-content" style="display: none;">
+    <!-- محتوى قسم من نحن -->
+</div>
+
+<!-- قسم الكورسات -->
+<div id="courses-section" class="tab-content" style="display: none;">
+    <!-- محتوى الكورسات -->
+</div>
+
+<!-- قسم لوحة الإدارة (خاص بالإدارة فقط) -->
+<div id="admin-section" class="tab-content" style="display: none; padding: 20px; color: #fff;">
     <h2>لوحة إدارة الكورسات والدروس</h2>
 
     <!-- إضافة كورس -->
-    <div class="admin-box" style="margin-bottom: 25px; border: 1px solid #333; padding: 15px; border-radius: 8px;">
+    <div class="admin-box" style="margin-bottom: 25px; border: 1px solid #333; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.05);">
         <h3>1. إضافة كورس جديد</h3>
-        <input type="text" id="courseTitle" placeholder="عنوان الكورس" required style="width: 100%; margin-bottom: 10px; padding: 8px;">
+        <input type="text" id="courseTitle" placeholder="عنوان الكورس" style="width: 100%; margin-bottom: 10px; padding: 8px;">
         <textarea id="courseDesc" placeholder="وصف الكورس" style="width: 100%; margin-bottom: 10px; padding: 8px;"></textarea>
         <button onclick="submitNewCourse()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">إضافة الكورس</button>
     </div>
 
-    <!-- إضافة درس ووسائطه الستة -->
-    <div class="admin-box" style="border: 1px solid #333; padding: 15px; border-radius: 8px;">
+    <!-- إضافة درس والوسائل الستة -->
+    <div class="admin-box" style="border: 1px solid #333; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.05);">
         <h3>2. إضافة درس بالوسائل التعليمية الستة</h3>
-        <select id="selectCourse" style="width: 100%; margin-bottom: 10px; padding: 8px;"></select>
-        <select id="selectUnit" style="width: 100%; margin-bottom: 10px; padding: 8px;"></select>
-
         <input type="text" id="lessonTitle" placeholder="عنوان الدرس" style="width: 100%; margin-bottom: 10px; padding: 8px;">
 
-        <h4>إرفاق الوسائل التعليمية (ملف أو رابط):</h4>
+        <h4 style="margin-top: 15px;">إرفاق الوسائل التعليمية الستة (ملف من الجهاز أو رابط):</h4>
         
-        <label>1. ملف PDF / الملخص:</label>
+        <p>1. ملف PDF / الملخص:</p>
         <input type="file" id="resPdfFile" accept=".pdf">
-        <input type="url" id="resPdfUrl" placeholder="أو ضع رابط المستند هنا" style="width: 100%; margin-bottom: 10px;">
+        <input type="url" id="resPdfUrl" placeholder="أو ضع رابط المستند هنا" style="width: 100%; margin-bottom: 10px; padding: 6px;">
 
-        <label>2. الفيديو التعليمي:</label>
+        <p>2. الفيديو التعليمي:</p>
         <input type="file" id="resVideoFile" accept="video/*">
-        <input type="url" id="resVideoUrl" placeholder="أو ضع رابط الفيديو (YouTube/Drive)" style="width: 100%; margin-bottom: 10px;">
+        <input type="url" id="resVideoUrl" placeholder="أو ضع رابط الفيديو (YouTube/Drive)" style="width: 100%; margin-bottom: 10px; padding: 6px;">
 
-        <label>3. العرض التقديمي (PPTX/PDF):</label>
+        <p>3. العرض التقديمي (PPTX/PDF):</p>
         <input type="file" id="resPptFile">
-        <input type="url" id="resPptUrl" placeholder="أو ضع رابط العرض التقديمي" style="width: 100%; margin-bottom: 10px;">
+        <input type="url" id="resPptUrl" placeholder="أو ضع رابط العرض التقديمي" style="width: 100%; margin-bottom: 10px; padding: 6px;">
 
-        <label>4. ورقة العمل / التمارين:</label>
+        <p>4. ورقة العمل / التمارين:</p>
         <input type="file" id="resWorksheetFile">
-        <input type="url" id="resWorksheetUrl" placeholder="أو ضع رابط التمارين" style="width: 100%; margin-bottom: 10px;">
+        <input type="url" id="resWorksheetUrl" placeholder="أو ضع رابط التمارين" style="width: 100%; margin-bottom: 10px; padding: 6px;">
 
-        <label>5. الخريطة الذهنية:</label>
+        <p>5. الخريطة الذهنية:</p>
         <input type="file" id="resMindmapFile">
-        <input type="url" id="resMindmapUrl" placeholder="أو ضع رابط الخريطة الذهنية" style="width: 100%; margin-bottom: 10px;">
+        <input type="url" id="resMindmapUrl" placeholder="أو ضع رابط الخريطة الذهنية" style="width: 100%; margin-bottom: 10px; padding: 6px;">
 
-        <label>6. البطاقات التعليمية (Flashcards):</label>
+        <p>6. البطاقات التعليمية (Flashcards):</p>
         <input type="file" id="resFlashcardsFile">
-        <input type="url" id="resFlashcardsUrl" placeholder="أو ضع رابط البطاقات" style="width: 100%; margin-bottom: 10px;">
+        <input type="url" id="resFlashcardsUrl" placeholder="أو ضع رابط البطاقات" style="width: 100%; margin-bottom: 10px; padding: 6px;">
 
-        <button onclick="submitNewLesson()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">حفظ الدرس بالوسائل</button>
+        <button onclick="submitNewLesson()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px;">حفظ الدرس بالوسائل</button>
     </div>
-</section>
+</div>
