@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الخريطة الذهنية | الإدارة والتشغيل</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1128;--sf:rgba(255,255,255,.05);--bd:rgba(255,255,255,.1);--tx:#fff;--mu:#a0aec0;--cy:#00f2fe;--bl:#4facfe;color-scheme:dark;box-sizing:border-box}
+*{box-sizing:border-box}
+body{margin:0;color:var(--tx);font-family:Cairo,system-ui,sans-serif;line-height:1.7;background:radial-gradient(55% 35% at 85% -5%,rgba(79,172,254,.28),transparent 70%),radial-gradient(45% 30% at 0% 15%,rgba(0,242,254,.12),transparent 70%),var(--bg);min-height:100vh}
+.wrap{max-width:920px;margin:auto;padding:18px 14px 56px}
+.hero{text-align:center;padding:14px 0 4px}.hero h1{font-size:clamp(1.35rem,5vw,2rem);font-weight:800;margin:0 0 4px}.hero p{margin:0;color:var(--mu);font-size:.92rem}
+.tools{position:sticky;top:0;z-index:5;display:flex;gap:8px;flex-wrap:wrap;margin:16px 0;padding:10px;border-radius:16px;background:rgba(10,17,40,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--bd)}
+.tools input{flex:1 1 100%;min-width:0;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:12px;color:var(--tx);font:inherit;padding:8px 14px;outline:none}.tools input:focus{border-color:var(--cy)}
+.tools button{flex:1;font:inherit;font-weight:700;font-size:.88rem;color:var(--tx);background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:8px 14px;cursor:pointer}.tools button:hover{border-color:var(--cy);color:var(--cy)}
+.rootn{width:fit-content;max-width:100%;margin:0 auto;text-align:center;padding:14px 28px;border-radius:20px;font-weight:800;font-size:1.2rem;color:#06142e;background:linear-gradient(135deg,#4facfe,#00f2fe);box-shadow:0 0 40px rgba(0,242,254,.35)}
+.rootn small{display:block;font-weight:600;font-size:.78rem;opacity:.75}
+.stem{width:2px;height:22px;margin:0 auto;background:linear-gradient(var(--cy),transparent)}
+.br{--c:#4facfe;margin:14px 0}.br>.nl{background:linear-gradient(135deg,color-mix(in srgb,var(--c) 26%,transparent),var(--sf));border:1px solid color-mix(in srgb,var(--c) 55%,transparent);border-radius:18px;padding:12px 14px;font-weight:800;font-size:1.05rem}
+.br>.nl .bn{width:34px;height:34px;border-radius:11px;flex:none;display:grid;place-items:center;background:var(--c);color:#06142e;font-weight:800}
+.nl{display:flex;align-items:center;gap:10px;padding:7px 12px;cursor:default;border-radius:12px;border:1px solid transparent;transition:.2s}
+.has>.nl{cursor:pointer;background:var(--sf);border-color:var(--bd)}.has>.nl:hover{border-color:var(--c)}
+.tx{flex:1;min-width:0}.en{unicode-bidi:isolate;font-family:system-ui,sans-serif;font-size:.93em;color:#cdeaff}
+.cnt{font-size:.75rem;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);border-radius:999px;padding:0 9px}
+.tg{width:18px;height:18px;flex:none;position:relative}.tg::before{content:"";position:absolute;inset:5px;border-left:2px solid var(--c);border-bottom:2px solid var(--c);transform:rotate(45deg);transition:transform .25s}.open>.nl>.tg::before{transform:rotate(-45deg) translate(1px,-1px)}
+.dt{width:8px;height:8px;border-radius:50%;flex:none;background:var(--c);box-shadow:0 0 8px var(--c);margin-inline:5px}
+.col{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}.open>.col{grid-template-rows:1fr}.col>div{overflow:hidden}
+.kids{margin-inline-start:20px;padding-inline-start:16px;padding-top:6px;border-inline-start:2px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.n{position:relative;margin:5px 0}.kids>.n::before{content:"";position:absolute;inset-inline-start:-16px;top:19px;width:14px;border-top:2px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.n[hidden]{display:none}.hit>.nl{box-shadow:0 0 0 2px var(--cy),0 0 22px rgba(0,242,254,.35)}
+.kids .kids{margin-inline-start:12px}
+.none{display:none;text-align:center;color:var(--mu);padding:24px}.foot{text-align:center;color:var(--mu);font-size:.82rem;margin-top:30px}
+@media(max-width:480px){.kids{margin-inline-start:12px;padding-inline-start:12px}.kids>.n::before{inset-inline-start:-12px;width:10px}.nl{padding:7px 8px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero"><h1>الخريطة الذهنية: الإدارة والتشغيل</h1><p>إعداد: المبرمجة إسراء النور · 2026</p></div>
+<div class="tools"><input id="q" type="search" placeholder="ابحث في الخريطة…" autocomplete="off"><button id="ea">فتح الكل</button><button id="ca">طي الكل</button></div>
+<div class="rootn">الإدارة والتشغيل<small>اضغط على أي فرع لفتحه</small></div><div class="stem"></div>
+<div id="root"></div><div class="none" id="none">لا توجد نتائج مطابقة.</div>
+<p class="foot">مبنية على ملف «الإدارة والتشغيل 2026»</p>
+</div>
+<script>
+const D=[
+{t:'مقدمة عن الحاسوب',c:[
+ {t:'التعريف: جهاز كهربائي إلكتروني له قدرة فائقة على استقبال (إدخال) البيانات ومعالجتها وتخزينها وإخراجها'},
+ {t:'عناصر الحاسوب الثلاثة',c:[{t:'المكونات المادية (Hardware)'},{t:'المكونات البرمجية (Software)'},{t:'مستخدم الحاسوب (User)'}]}]},
+{t:'تصنيف الحاسبات',c:[
+ {t:'أولاً: حسب الغرض من الاستخدام (By Purpose)',c:[
+  {t:'حاسبات الأغراض العامة (General Purpose)',c:[{t:'أغراض علمية أو تجارية أو إدارية: أنظمة البنوك والمصارف وحسابات الرواتب والميزانيات'},{t:'حل المعادلات الرياضية والتصاميم الهندسية'},{t:'مرونة كاملة: لا يمكن حصر استعمالاتها'}]},
+  {t:'حاسبات الأغراض الخاصة (Special Purpose)',c:[{t:'تُستخدم لغرض واحد فقط صُمم من أجله'},{t:'أمثلة: التحكم في العمليات، أجهزة الإنذار المبكر، المركبات الفضائية، الأجهزة الطبية'}]}]},
+ {t:'ثانياً: حسب نوع البيانات التي يعالجها (Type of Data Processed)',c:[
+  {t:'الحاسبات التناظرية (Analog Computer)',c:[{t:'تعالج بيانات تتغير باستمرار مثل درجات الحرارة والضغط الجوي'},{t:'تُستخدم في المشكلات العلمية والهندسية وتصميم نماذج الطائرات والصواريخ والمركبات الفضائية'}]},
+  {t:'الحاسبات الرقمية (Digital Computer)',c:[{t:'تستعمل المعلومات المتقطعة والمتغيرات الممثلة بالأعداد'},{t:'ملائمة للاستعمالات التجارية والعلمية'},{t:'من أكثر الحاسبات مرونة في تنفيذ العمليات'}]},
+  {t:'الحاسبات الهجينة (Hybrid Computer)',c:[{t:'مزيج من الرقمي والتناظري: مداخل ومخارج تناظرية والمعالجة رقمية'},{t:'من الرقمية: القدرة على خزن البيانات والدقة العالية'},{t:'من التناظرية: ردة الفعل السريعة ونظام الوقت الحقيقي'}]}]},
+ {t:'ثالثاً: حسب الحجم والأداء',c:[
+  {t:'الحاسبات الدقيقة المكتبية (Microcomputers)',c:[{t:'أصغر أنواع الحاسبات ذات الأغراض العامة'},{t:'للأغراض الإدارية والعلمية'},{t:'تعتمد على المعالج الدقيق (Microprocessor)'},{t:'يُطلق عليها الحاسب الشخصي (PC)'}]},
+  {t:'الحاسبات الصغيرة - اللاب توب (Minicomputers)',c:[{t:'ظهرت في مطلع الستينيات من القرن الماضي كأجهزة متخصصة'},{t:'صارت للاستخدامات العامة: إدارية وتجارية وعلمية'},{t:'تُستعمل أيضاً في التحكم بالعمليات الصناعية وتوجيه المركبات وأجهزة الإنذار'}]}]}]},
+{t:'مكونات الحاسب الآلي',c:[
+ {t:'أولاً: المكونات المادية (Hardware)',c:[
+  {t:'تعريفها: مجموعة الأجزاء الملموسة في الجهاز'},
+  {t:'الأجهزة الطرفية (Peripheral Devices): مكونات ترتبط خارجياً عبر المنافذ (Ports) خلف صندوق النظام'},
+  {t:'1) وحدات الإدخال (Input Units)',c:[{t:'الكاميرا'},{t:'الميكروفون'},{t:'الماسح الضوئي'},{t:'لوحة المفاتيح'},{t:'الفأرة'}]},
+  {t:'2) وحدات الإخراج (Output Units)',c:[{t:'الطابعة'},{t:'السماعة'},{t:'الشاشة'}]},
+  {t:'3) وحدة المعالجة المركزية (CPU)',c:[
+   {t:'وحدة الحساب والمنطق (ALU)',c:[{t:'العمليات الحسابية: الجمع والطرح والقسمة'},{t:'العمليات المنطقية: مثل المقارنة بين عددين'}]},
+   {t:'وحدة التحكم (Control Unit)',c:[{t:'مراقبة تنفيذ الأعمال التي يقوم بها نظام الحاسوب'},{t:'تسهيل الإدخال والإخراج وخزن البيانات وتنسيقها'},{t:'مراقبة وتوجيه الوحدات الأخرى'}]},
+   {t:'وحدة الذاكرة الرئيسية (MMU)',c:[
+    {t:'ذاكرة القراءة فقط (ROM)',c:[{t:'تحتوي البرامج الأساسية التي يحتاجها الحاسوب عند كل تشغيل'},{t:'لا تفقد برامجها عند انقطاع التيار الكهربائي'},{t:'منها برنامج الإعداد للحاسب'}]},
+    {t:'الذاكرة العشوائية (RAM)',c:[{t:'يتعامل معها المستخدم في خزن برامجه وتسجيل بياناته'},{t:'تبادل ومعالجة البيانات بطريقة مباشرة'},{t:'تفقد غير المحفوظ عند انقطاع التغذية الكهربائية'}]}]}]},
+  {t:'4) وحدة الخزن المساعدة',c:[
+   {t:'القرص الصلب (Hard Disc)',c:[{t:'يخزن أنظمة التشغيل والبرامج التطبيقية ولغات البرمجة'},{t:'يخزن ملفات المستخدم: الطباعة والرسوم'}]},
+   {t:'القرص المرن (Floppy Disc)',c:[{t:'سعة صغيرة 1.44 ميجا بايت لخزن الملفات الصغيرة'},{t:'تم الاستغناء عنه وحلّ محله القرص القابل للإزالة'}]},
+   {t:'أقراص الليزر (CD-ROM)',c:[{t:'الخزن فيه لمرة واحدة'},{t:'سعته حوالي 700 ميجا بايت'}]},
+   {t:'القرص القابل للإزالة (Flash Memory)',c:[{t:'سعة تخزين عالية وسهولة في الاستخدام'},{t:'يمكن الكتابة أكثر من مرة: حذف المحتويات واستبدالها'},{t:'يحمل مواصفات القرص المرن وأقراص الليزر'}]}]}]},
+ {t:'ثانياً: المكونات البرمجية (Software)',c:[{t:'برامج التشغيل'},{t:'برامج التطبيق'}]}]},
+{t:'نظام التشغيل (OS)',c:[
+ {t:'التعريف: «الروح» التي تدير جسد الحاسوب، البرنامج الأساسي الذي يربط المكونات المادية (Hardware) بالمستخدم، وبدونه لا يمكن تشغيل أي تطبيق أو لعبة'},
+ {t:'أنواعه حسب الغرض والجهاز',c:[
+  {t:'أنظمة الحواسيب الشخصية (Desktop OS): ويندوز وماك ولينكس'},
+  {t:'أنظمة الأجهزة المحمولة (Mobile OS): أندرويد وiOS'},
+  {t:'أنظمة الخوادم (Server OS): لإدارة الشبكات الكبيرة وتوفير الخدمات، مثل Windows Server ولينكس'},
+  {t:'الأنظمة المدمجة (Embedded OS): الأجهزة المنزلية والسيارات والآلات الصناعية'}]},
+ {t:'مقارنة أشهر الأنظمة',c:[
+  {t:'ويندوز (Microsoft Windows)',c:[{t:'الانتشار: الأكثر استخداماً عالمياً وتوافقية هائلة مع الأجهزة والملحقات'},{t:'الميزات',c:[{t:'المنصة الأولى للألعاب بفضل دعم DirectX'},{t:'أكبر مكتبة برامج: إدارية ومحاسبية وهندسية'},{t:'سهولة الاستخدام بواجهة رسومية مألوفة'}]},{t:'العيوب: الأكثر عرضة للفيروسات والبرمجيات الخبيثة، ويستهلك موارد الجهاز مع مرور الوقت'}]},
+  {t:'ماك (Apple macOS / iOS)',c:[{t:'التكامل: مصمم لأجهزة أبل (MacBook, iMac) باستقرار وتناغم بين السوفتوير والهاردوير'},{t:'الميزات',c:[{t:'الأفضل للمصممين والمحررين (Video Editing) والموسيقيين'},{t:'آمن جداً ومستقر، ونادراً ما يتعرض للفيروسات التقليدية'},{t:'النظام البيئي (Ecosystem): تجربة متصلة مع iPhone وiPad'}]},{t:'العيوب: حصري لأجهزة أبل باهظة الثمن، وغير مرن في ترقية قطع الجهاز الداخلية'}]},
+  {t:'لينكس (Linux)',c:[{t:'الحرية: مفتوح المصدر ومجاني بالكامل، ويمكن الاطلاع على كوده وتعديله'},{t:'الأمان والخصوصية: الأكثر أماناً، والخيار الأول لخبراء الأمن السيبراني والمبرمجين'},{t:'الميزات',c:[{t:'خفة الأداء: يستهلك موارد قليلة ويشغل الحواسيب القديمة بكفاءة'},{t:'التوزيعات (Distros): Ubuntu للمبتدئين وKali للمتخصصين'}]},{t:'العيوب: يحتاج لمنحنى تعلم، ولا يدعم مباشرة بعض البرامج (Adobe Suite) أو الألعاب الكبرى'}]}]},
+ {t:'الخلاصة للاختيار السريع',c:[{t:'لاعب (Gamer) أو موظف إداري: اختر Windows'},{t:'مصمم أو تهتم بالمظهر والفخامة: اختر macOS'},{t:'مبرمج أو تهتم بالخصوصية والسرعة: اختر Linux'}]}]},
+{t:'إدارة الحسابات والإعدادات في ويندوز',c:[
+ {t:'إنشاء مستخدم جديد (New User)',c:[{t:'ابدأ (Start) ثم الإعدادات (Settings)'},{t:'الحسابات (Accounts)'},{t:'العائلة ومستخدمون آخرون (Family & other users)'},{t:'إضافة شخص آخر إلى هذا الكمبيوتر (Add someone else to this PC)'},{t:'إدخال اسم المستخدم وكلمة المرور'}]},
+ {t:'تحويل المستخدم إلى مسؤول (Administrator)',c:[{t:'الخطوات',c:[{t:'الإعدادات ثم الحسابات (Accounts)'},{t:'العائلة ومستخدمون آخرون (Family & other users)'},{t:'اضغط على الحساب الذي أنشأته'},{t:'تغيير نوع الحساب (Change account type)'},{t:'من مستخدم قياسي (Standard User) إلى مسؤول (Administrator)'},{t:'موافق (OK)'}]},{t:'نصائح هامة',c:[{t:'يُفضل حساب مسؤول واحد فقط للتعديلات'},{t:'الحساب القياسي للاستخدام اليومي للأطفال والضيوف لحماية النظام'},{t:'تفعيل الحساب: يظهر في قائمة الدخول بعد تسجيل خروج (Sign out) أو إعادة التشغيل'}]}]},
+ {t:'خاصية الكشك (Kiosk Mode)',c:[{t:'تحويل الجهاز إلى منصة عرض لا يصل المستخدم فيها إلا لتطبيق واحد فقط (مثل متصفح أو عرض صور)'},{t:'طريقة الإعداد',c:[{t:'من نافذة العائلة ومستخدمون آخرون: إعداد الكشك (Set up a kiosk)'},{t:'الوصول المخصص (Assigned access)'},{t:'بدء الاستخدام (Get started)'},{t:'إدخال اسم للكشك واختيار التطبيق المسموح'}]},{t:'عند الدخول بهذا الحساب يفتح التطبيق مباشرة، ولا يخرج منه إلا بالضغط على Ctrl+Alt+Shift+Delete'}]},
+ {t:'إعداد كلمة المرور (إنشاء وحذف)',c:[{t:'إنشاء كلمة مرور',c:[{t:'الإعدادات ثم الحسابات ثم خيارات تسجيل الدخول (Sign-in options)'},{t:'كلمة المرور (Password) ثم إضافة (Add)'},{t:'اتباع الخطوات لإدخال الرقم السري وتلميحه'}]},{t:'حذف كلمة المرور',c:[{t:'في خيارات تسجيل الدخول: كلمة المرور ثم تغيير (Change)'},{t:'إدخال كلمة المرور الحالية'},{t:'ترك خانات كلمة المرور الجديدة فارغة ثم التالي ثم إنهاء'}]},{t:'ملاحظة: لا يمكن حذف كلمة المرور مع حساب مايكروسوفت (بريد إلكتروني)، يجب أن يكون الحساب محلياً (Local Account)'}]},
+ {t:'إعدادات اللغة (Language Settings)',c:[{t:'الإعدادات ثم الوقت واللغة (Time & Language)'},{t:'اختيار اللغة (Language) من القائمة الجانبية'},{t:'إضافة لغة كتابة: إضافة لغة (Add a language) تحت «اللغات المفضلة»'},{t:'تغيير لغة الجهاز بالكامل: اختيار اللغة من قائمة لغة عرض Windows'}]},
+ {t:'إعدادات الوقت (Time Settings)',c:[{t:'الإعدادات ثم الوقت واللغة ثم التاريخ والوقت (Date & time)'},{t:'تفعيل تعيين الوقت تلقائياً (Set time automatically) لضمان دقة الساعة عبر الإنترنت'},{t:'تفعيل تعيين المنطقة الزمنية تلقائياً أو اختيارها يدوياً: القاهرة، الرياض، السودان'},{t:'التغيير اليدوي: إيقاف التشغيل التلقائي (off) ثم زر تغيير (Change)'}]}]},
+{t:'إعدادات سطح المكتب',c:[
+ {t:'ملاحظة: القائمة تظهر بالنقر بزر الماوس الأيمن (Right-Click) على سطح المكتب، وهي أسرع طريقة للتحكم بشكل الواجهة'},
+ {t:'1) عرض (View)',c:[{t:'حجم الأيقونات (Large / Medium / Small icons): كبير ومتوسط وصغير'},{t:'ترتيب تلقائي (Auto arrange icons): ترتيب الأيقونات تلقائياً في أعمدة'},{t:'محاذاة الأيقونات للشبكة (Align icons to grid): اصطفاف منظم يمنع التداخل'},{t:'إظهار أيقونات سطح المكتب (Show desktop icons): إلغاؤه يخفي الأيقونات دون حذفها'}]},
+ {t:'2) فرز حسب (Sort by)',c:[{t:'الاسم (Name): ترتيب أبجدي'},{t:'الحجم (Size): من الأكبر للأصغر أو العكس'},{t:'نوع العنصر (Item type): يجمع المجلدات والصور والاختصارات'},{t:'تاريخ التعديل (Date modified): أحدث الملفات في المقدمة'}]},
+ {t:'3) إعدادات العرض (Display settings)',c:[{t:'السطوع (Brightness): التحكم بقوة إضاءة الشاشة'},{t:'الضوء الليلي (Night light): تقليل اللون الأزرق وإراحة العين'},{t:'المقياس والتخطيط (Scale and layout): تكبير النصوص والتطبيقات مثل 125%'},{t:'دقة الشاشة (Display resolution): اختيار جودة الصورة مثل 1920×1080'},{t:'الاتجاه (Orientation): أفقي أو عمودي'}]},
+ {t:'4) تخصيص (Personalize)',c:[{t:'الخلفية (Background): صورة أو لون ثابت أو عرض شرائح'},{t:'الألوان (Colors): لون السمة (Accent color) والتحويل بين الوضع المظلم (Dark Mode) والفاتح (Light Mode)'},{t:'شاشة القفل (Lock screen)'},{t:'السمات (Themes): تغيير الشكل بالكامل بضغطة واحدة'},{t:'الخطوط (Fonts): استعراض وإضافة خطوط'},{t:'شريط المهام (Taskbar): إخفاؤه تلقائياً أو تغيير مكانه'}]}]},
+{t:'شريط المهام (Taskbar)',c:[
+ {t:'ملاحظة: يظهر الخيار بالنقر بزر الماوس الأيمن على مساحة فارغة في الشريط'},
+ {t:'1) أشرطة الأدوات (Toolbars)',c:[{t:'العناوين (Address): مربع بحث يفتح الملف إن وُجد وإلا يبحث في جوجل عبر المتصفح'},{t:'الروابط (Links): اختصارات للمواقع المفضلة'},{t:'سطح المكتب (Desktop): قائمة بمحتويات سطح المكتب دون تصغير النوافذ'},{t:'شريط أدوات جديد (New toolbar): للوصول السهل إلى ملفات داخلية'}]},
+ {t:'2) أدوات البحث والرموز (Search & Icons)',c:[{t:'البحث (Search): مربع بحث كامل أو أيقونة فقط أو مخفي'},{t:'إظهار زر كورتانا (Show Cortana button)'},{t:'إظهار زر عرض المهام (Show Task View button): يعرض النوافذ والأسطح الافتراضية'}]},
+ {t:'3) أدوات خاصة باللمس والعمل',c:[{t:'إظهار جهات الاتصال (Show People on the taskbar)'},{t:'مساحة عمل الأقلام (Show Windows Ink Workspace button): أدوات الرسم والملاحظات'},{t:'لوحة المفاتيح باللمس (Show touch keyboard button): مفيدة عند تعطل اللوحة الحقيقية'}]},
+ {t:'4) ترتيب النوافذ المفتوحة (Windows Arrangement)',c:[{t:'تتالية النوافذ (Cascade windows): فوق بعضها بشكل متدرج'},{t:'إظهار النوافذ بشكل مكدس (Show windows stacked): فوق بعضها أفقياً'},{t:'إظهار النوافذ جنباً إلى جنب (Show windows side by side): تقسيم طولي'},{t:'إظهار سطح المكتب (Show the desktop): تصغير جميع النوافذ فوراً'}]},
+ {t:'5) مدير المهام (Task Manager)',c:[{t:'مراقبة أداء المعالج والرام'},{t:'إغلاق البرامج المعلقة أو التي لا تستجيب'},{t:'التحكم في البرامج التي تبدأ تلقائياً عند التشغيل'}]},
+ {t:'6) تأمين شريط المهام (Lock the taskbar)',c:[{t:'يمنع تغيير حجم الشريط أو سحبه لأعلى أو لليمين'},{t:'يُفضل تفعيله دائماً لتجنب تغيير الواجهة بالخطأ'}]},
+ {t:'7) إعدادات شريط المهام (Taskbar settings)',c:[{t:'تغيير لون شريط المهام'},{t:'تفعيل الإخفاء التلقائي (Auto-hide)'},{t:'نقل الشريط لأعلى الشاشة أو لأحد الجانبين'},{t:'تصغير حجم الأيقونات لتوفير مساحة'}]}]}
+];
+const COL=['#4facfe','#00f2fe','#a78bfa','#f59e0b','#34d399','#fb7185','#f472b6','#60a5fa'];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RE=/([A-Za-z0-9][A-Za-z0-9 +&'’.\/_\-]*[A-Za-z0-9]|[A-Za-z])/g;
+const en=s=>s.split(RE).map((p,i)=>i%2?`<span class="en" dir="ltr">${esc(p)}</span>`:esc(p)).join('');
+function node(n,lv,idx){const has=n.c&&n.c.length,el=document.createElement('div');el.className='n'+(has?' has':'')+(lv===0?' br':'');el.dataset.lv=lv;el._d=n;
+ el.innerHTML=`<div class="nl">${lv===0?`<span class="bn">${idx+1}</span>`:''}${has?'<span class="tg"></span>':'<span class="dt"></span>'}<span class="tx">${en(n.t)}</span>${has?`<span class="cnt">${n.c.length}</span>`:''}</div>`;
+ if(has){const col=document.createElement('div'),inn=document.createElement('div'),kids=document.createElement('div');col.className='col';kids.className='kids';
+  n.c.forEach(k=>kids.appendChild(node(k,lv+1)));inn.appendChild(kids);col.appendChild(inn);el.appendChild(col);
+  if(lv<1)el.classList.add('open');el.firstChild.onclick=()=>el.classList.toggle('open')}
+ return el}
+const root=document.getElementById('root');
+D.forEach((b,i)=>{const e=node(b,0,i);e.style.setProperty('--c',COL[i%COL.length]);root.appendChild(e)});
+const all=()=>[...document.querySelectorAll('.n.has')];
+document.getElementById('ea').onclick=()=>all().forEach(e=>e.classList.add('open'));
+document.getElementById('ca').onclick=()=>all().forEach(e=>e.classList.remove('open'));
+function filt(el,q,force){const d=el._d,self=d.t.toLowerCase().includes(q),f=force||(!!q&&self);let any=false;
+ el.querySelectorAll(':scope>.col>div>.kids>.n').forEach(k=>{if(filt(k,q,f))any=true});
+ const show=!q||self||force||any;el.hidden=!show;el.classList.toggle('hit',!!q&&self);if(q&&any)el.classList.add('open');return show}
+document.getElementById('q').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();let n=0;
+ if(!q)all().forEach(x=>x.classList.toggle('open',x.dataset.lv==='0'));
+ [...root.children].forEach(b=>{if(filt(b,q,false))n++});document.getElementById('none').style.display=n?'none':'block'});
+</script>
+</body>
+</html>

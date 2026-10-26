@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الخريطة الذهنية | Microsoft Excel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1128;--sf:rgba(255,255,255,.05);--bd:rgba(255,255,255,.1);--tx:#fff;--mu:#a0aec0;--cy:#00f2fe;--bl:#4facfe;color-scheme:dark;box-sizing:border-box}
+*{box-sizing:border-box}
+body{margin:0;color:var(--tx);font-family:Cairo,system-ui,sans-serif;line-height:1.7;background:radial-gradient(55% 35% at 85% -5%,rgba(79,172,254,.28),transparent 70%),radial-gradient(45% 30% at 0% 15%,rgba(0,242,254,.12),transparent 70%),var(--bg);min-height:100vh}
+.wrap{max-width:920px;margin:auto;padding:18px 14px 56px}
+.hero{text-align:center;padding:14px 0 4px}.hero h1{font-size:clamp(1.35rem,5vw,2rem);font-weight:800;margin:0 0 4px}.hero p{margin:0;color:var(--mu);font-size:.92rem}
+.tools{position:sticky;top:0;z-index:5;display:flex;gap:8px;flex-wrap:wrap;margin:16px 0;padding:10px;border-radius:16px;background:rgba(10,17,40,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--bd)}
+.tools input{flex:1 1 100%;min-width:0;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:12px;color:var(--tx);font:inherit;padding:8px 14px;outline:none}.tools input:focus{border-color:var(--cy)}
+.tools button{flex:1;font:inherit;font-weight:700;font-size:.88rem;color:var(--tx);background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:8px 14px;cursor:pointer}.tools button:hover{border-color:var(--cy);color:var(--cy)}
+.rootn{width:fit-content;max-width:100%;margin:0 auto;text-align:center;padding:14px 28px;border-radius:20px;font-weight:800;font-size:1.2rem;color:#06142e;background:linear-gradient(135deg,#4facfe,#00f2fe);box-shadow:0 0 40px rgba(0,242,254,.35)}
+.rootn small{display:block;font-weight:600;font-size:.78rem;opacity:.75}
+.stem{width:2px;height:22px;margin:0 auto;background:linear-gradient(var(--cy),transparent)}
+.br{--c:#4facfe;margin:14px 0}.br>.nl{background:linear-gradient(135deg,color-mix(in srgb,var(--c) 26%,transparent),var(--sf));border:1px solid color-mix(in srgb,var(--c) 55%,transparent);border-radius:18px;padding:12px 14px;font-weight:800;font-size:1.05rem}
+.br>.nl .bn{width:34px;height:34px;border-radius:11px;flex:none;display:grid;place-items:center;background:var(--c);color:#06142e;font-weight:800}
+.nl{display:flex;align-items:center;gap:10px;padding:7px 12px;cursor:default;border-radius:12px;border:1px solid transparent;transition:.2s}
+.has>.nl{cursor:pointer;background:var(--sf);border-color:var(--bd)}.has>.nl:hover{border-color:var(--c)}
+.tx{flex:1;min-width:0}.en{unicode-bidi:isolate;font-family:system-ui,sans-serif;font-size:.93em;color:#cdeaff}
+.cnt{font-size:.75rem;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);border-radius:999px;padding:0 9px}
+.tg{width:18px;height:18px;flex:none;position:relative}.tg::before{content:"";position:absolute;inset:5px;border-left:2px solid var(--c);border-bottom:2px solid var(--c);transform:rotate(45deg);transition:transform .25s}.open>.nl>.tg::before{transform:rotate(-45deg) translate(1px,-1px)}
+.dt{width:8px;height:8px;border-radius:50%;flex:none;background:var(--c);box-shadow:0 0 8px var(--c);margin-inline:5px}
+.col{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}.open>.col{grid-template-rows:1fr}.col>div{overflow:hidden}
+.kids{margin-inline-start:20px;padding-inline-start:16px;padding-top:6px;border-inline-start:2px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.n{position:relative;margin:5px 0}.kids>.n::before{content:"";position:absolute;inset-inline-start:-16px;top:19px;width:14px;border-top:2px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.n[hidden]{display:none}.hit>.nl{box-shadow:0 0 0 2px var(--cy),0 0 22px rgba(0,242,254,.35)}
+.kids .kids{margin-inline-start:12px}
+.none{display:none;text-align:center;color:var(--mu);padding:24px}.foot{text-align:center;color:var(--mu);font-size:.82rem;margin-top:30px}
+@media(max-width:480px){.kids{margin-inline-start:12px;padding-inline-start:12px}.kids>.n::before{inset-inline-start:-12px;width:10px}.nl{padding:7px 8px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero"><h1>الخريطة الذهنية: مقدمة Excel وقائمة File</h1><p>الوحدة 2 · أساسيات الحاسب · الدرس الأول</p></div>
+<div class="tools"><input id="q" type="search" placeholder="ابحث في الخريطة…" autocomplete="off"><button id="ea">فتح الكل</button><button id="ca">طي الكل</button></div>
+<div class="rootn">Microsoft Excel<small>اضغط على أي فرع لفتحه</small></div><div class="stem"></div>
+<div id="root"></div><div class="none" id="none">لا توجد نتائج مطابقة.</div>
+<p class="foot">أكاديمية المعراج الرقمي · Al-Me'raj Digital Academy</p>
+</div>
+<script>
+const D=[{"t": "ما هو Microsoft Excel؟", "c": [{"t": "برنامج جداول إلكترونية (Spreadsheet) من حزمة Microsoft Office"}, {"t": "الاستخدامات", "c": [{"t": "إدخال البيانات وتنظيمها في جداول"}, {"t": "إجراء العمليات الحسابية بالصيغ (Formulas) والدوال (Functions)"}, {"t": "الفرز والتصفية وتحليل البيانات"}, {"t": "إنشاء الرسوم البيانية (Charts)"}, {"t": "أمثلة: الميزانيات، كشوف الدرجات، الفواتير، المخزون"}]}, {"t": "ميزة مهمة: يعيد الحساب تلقائياً عند تغيير البيانات"}]}, {"t": "المفاهيم الأساسية", "c": [{"t": "المصنف (Workbook)", "c": [{"t": "ملف Excel الكامل، امتداده الافتراضي xlsx"}, {"t": "يحتوي ورقة عمل واحدة أو أكثر"}]}, {"t": "ورقة العمل (Worksheet)", "c": [{"t": "شبكة من الصفوف والأعمدة، اسمها الافتراضي Sheet1"}, {"t": "عدد الصفوف 1,048,576 وعدد الأعمدة 16,384 (حتى XFD)"}]}, {"t": "الخلية (Cell)", "c": [{"t": "تقاطع عمود وصف"}, {"t": "عنوانها: حرف العمود ثم رقم الصف مثل C5"}, {"t": "الخلية النشطة (Active Cell): المحاطة بإطار سميك"}]}, {"t": "النطاق (Range)", "c": [{"t": "مجموعة خلايا متجاورة"}, {"t": "يُكتب هكذا: A1:C5 (من A1 إلى C5)"}]}, {"t": "الأعمدة بحروف (A, B, C…) والصفوف بأرقام (1, 2, 3…)"}]}, {"t": "تشغيل Excel وإنشاء مصنف", "c": [{"t": "من قائمة ابدأ (Start): اكتب Excel ثم اختر Blank workbook"}, {"t": "أو من سطح المكتب: زر الفأرة الأيمن ثم New ثم Microsoft Excel Worksheet"}]}, {"t": "واجهة Excel", "c": [{"t": "شريط العنوان (Title Bar)", "c": [{"t": "اسم المصنف والبرنامج"}, {"t": "أزرار التصغير والتكبير والإغلاق"}]}, {"t": "شريط الوصول السريع (Quick Access Toolbar)", "c": [{"t": "أوامر سريعة: Save وUndo وRedo"}, {"t": "يمكن تخصيصه بإضافة أوامر"}]}, {"t": "الشريط (Ribbon)", "c": [{"t": "علامات التبويب (Tabs)", "c": [{"t": "File"}, {"t": "Home"}, {"t": "Insert"}, {"t": "Page Layout"}, {"t": "Formulas"}, {"t": "Data"}, {"t": "Review"}, {"t": "View"}]}, {"t": "الأوامر مجمعة في مجموعات (Groups)"}]}, {"t": "مربع الاسم (Name Box): يعرض عنوان الخلية النشطة ويسمح بالانتقال لخلية بكتابة عنوانها"}, {"t": "شريط الصيغة (Formula Bar): يعرض محتوى الخلية أو صيغتها، والزر fx لإدراج دالة"}, {"t": "رؤوس الأعمدة والصفوف (Column / Row Headers)"}, {"t": "منطقة الخلايا (ورقة العمل)"}, {"t": "تبويبات الأوراق (Sheet Tabs): للتنقل بين الأوراق، والزر + لإضافة ورقة"}, {"t": "شريط الحالة (Status Bar)", "c": [{"t": "حالة البرنامج مثل Ready"}, {"t": "إحصاءات سريعة للخلايا المحددة: Sum وAverage وCount"}, {"t": "طرق العرض: Normal وPage Layout وPage Break Preview"}, {"t": "شريط التكبير (Zoom)"}]}]}, {"t": "قائمة File (Backstage View)", "c": [{"t": "تفتح عرض الكواليس: واجهة كاملة لإدارة الملف وليس للتحرير داخل الورقة"}, {"t": "Home: الملفات الأخيرة والقوالب (في الإصدارات الحديثة)"}, {"t": "New (جديد): مصنف فارغ أو من قالب جاهز، اختصاره Ctrl+N"}, {"t": "Open (فتح): فتح مصنف محفوظ من الجهاز أو OneDrive، اختصاره Ctrl+O"}, {"t": "Info (معلومات)", "c": [{"t": "خصائص الملف"}, {"t": "حماية المصنف (Protect Workbook)", "c": [{"t": "Always Open Read-Only"}, {"t": "Encrypt with Password: تشفير بكلمة مرور"}, {"t": "Protect Current Sheet"}, {"t": "Protect Workbook Structure"}, {"t": "Mark as Final"}]}, {"t": "فحص المصنف (Inspect Workbook)"}, {"t": "إدارة المصنف (Manage Workbook): استعادة النسخ غير المحفوظة"}]}, {"t": "Save (حفظ): يحفظ التعديلات بنفس الاسم والمكان، اختصاره Ctrl+S"}, {"t": "Save As (حفظ باسم): حفظ نسخة باسم أو مكان أو صيغة مختلفة، اختصاره F12"}, {"t": "Print (طباعة)", "c": [{"t": "اختيار الطابعة وعدد النسخ (Copies)"}, {"t": "ما يُطبع: Active Sheets أو Entire Workbook أو Selection"}, {"t": "اتجاه الورقة Orientation، وحجم الورق، والهوامش (Margins)"}, {"t": "التحجيم (Scaling) والمعاينة"}, {"t": "اختصاره Ctrl+P"}]}, {"t": "Share (مشاركة): دعوة آخرين للمصنف أو إرسال نسخة بالبريد"}, {"t": "Export (تصدير): إنشاء PDF أو تغيير نوع الملف"}, {"t": "Close (إغلاق): إغلاق المصنف الحالي دون الخروج من Excel، اختصاره Ctrl+W"}, {"t": "Account (الحساب): معلومات المستخدم وسمة Office والإصدار والتحديثات"}, {"t": "Feedback (ملاحظات): إرسال اقتراحات إلى Microsoft"}, {"t": "Options (خيارات)", "c": [{"t": "General: اسم المستخدم والسمة والخط الافتراضي وعدد الأوراق في المصنف الجديد"}, {"t": "Formulas: طريقة الحساب Automatic أو Manual"}, {"t": "Proofing: التدقيق الإملائي والتصحيح التلقائي"}, {"t": "Save: صيغة الحفظ ومكانه والحفظ التلقائي AutoRecover (كل 10 دقائق افتراضياً)"}, {"t": "Language: لغات التحرير والعرض"}, {"t": "Advanced: منها اتجاه الورقة الافتراضي Right-to-left أو Left-to-right"}, {"t": "Customize Ribbon وQuick Access Toolbar وAdd-ins وTrust Center"}]}]}, {"t": "صيغ حفظ الملفات", "c": [{"t": "xlsx: مصنف Excel القياسي"}, {"t": "xlsm: مصنف يحتوي ماكرو (Macro)"}, {"t": "xls: Excel 97-2003 للتوافق مع الإصدارات القديمة"}, {"t": "csv: نص مفصول بفواصل لتبادل البيانات"}, {"t": "xltx: قالب (Template)"}, {"t": "pdf: للعرض والطباعة دون تعديل"}, {"t": "أحرف ممنوعة في اسم الملف:  \\ / : * ? \" < > |"}]}, {"t": "اختصارات لوحة المفاتيح", "c": [{"t": "Ctrl+N: مصنف جديد"}, {"t": "Ctrl+O: فتح"}, {"t": "Ctrl+S: حفظ"}, {"t": "F12: حفظ باسم"}, {"t": "Ctrl+P: طباعة"}, {"t": "Ctrl+W: إغلاق المصنف"}, {"t": "Alt+F4: إغلاق برنامج Excel"}, {"t": "Alt+F: فتح تبويب File"}]}, {"t": "تطبيق عملي", "c": [{"t": "أنشئ مصنفاً فارغاً بـ Ctrl+N"}, {"t": "اكتب بيانات بسيطة (الاسم والدرجة)"}, {"t": "احفظه باسم Lesson1 بصيغة xlsx"}, {"t": "احفظ نسخة بصيغة csv ثم أنشئ ملف PDF من Export"}, {"t": "غيّر AutoRecover إلى 5 دقائق من Options"}]}];
+const COL=['#4facfe','#00f2fe','#a78bfa','#f59e0b','#34d399','#fb7185','#f472b6','#60a5fa'];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RE=/([A-Za-z0-9][A-Za-z0-9 +&'’.,:\/_\-]*[A-Za-z0-9]|[A-Za-z])/g;
+const en=s=>s.split(RE).map((p,i)=>i%2?`<span class="en" dir="ltr">${esc(p)}</span>`:esc(p)).join('');
+function node(n,lv,idx){const has=n.c&&n.c.length,el=document.createElement('div');el.className='n'+(has?' has':'')+(lv===0?' br':'');el.dataset.lv=lv;el._d=n;
+ el.innerHTML=`<div class="nl">${lv===0?`<span class="bn">${idx+1}</span>`:''}${has?'<span class="tg"></span>':'<span class="dt"></span>'}<span class="tx">${en(n.t)}</span>${has?`<span class="cnt">${n.c.length}</span>`:''}</div>`;
+ if(has){const col=document.createElement('div'),inn=document.createElement('div'),kids=document.createElement('div');col.className='col';kids.className='kids';
+  n.c.forEach(k=>kids.appendChild(node(k,lv+1)));inn.appendChild(kids);col.appendChild(inn);el.appendChild(col);
+  if(lv<1)el.classList.add('open');el.firstChild.onclick=()=>el.classList.toggle('open')}
+ return el}
+const root=document.getElementById('root');
+D.forEach((b,i)=>{const e=node(b,0,i);e.style.setProperty('--c',COL[i%COL.length]);root.appendChild(e)});
+const all=()=>[...document.querySelectorAll('.n.has')];
+document.getElementById('ea').onclick=()=>all().forEach(e=>e.classList.add('open'));
+document.getElementById('ca').onclick=()=>all().forEach(e=>e.classList.remove('open'));
+function filt(el,q,force){const d=el._d,self=d.t.toLowerCase().includes(q),f=force||(!!q&&self);let any=false;
+ el.querySelectorAll(':scope>.col>div>.kids>.n').forEach(k=>{if(filt(k,q,f))any=true});
+ const show=!q||self||force||any;el.hidden=!show;el.classList.toggle('hit',!!q&&self);if(q&&any)el.classList.add('open');return show}
+document.getElementById('q').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();let n=0;
+ if(!q)all().forEach(x=>x.classList.toggle('open',x.dataset.lv==='0'));
+ [...root.children].forEach(b=>{if(filt(b,q,false))n++});document.getElementById('none').style.display=n?'none':'block'});
+</script>
+</body>
+</html>
