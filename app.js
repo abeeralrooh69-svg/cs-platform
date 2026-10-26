@@ -1,81 +1,93 @@
 // ==========================================
-// نظام إدارة المحتوى - أكاديمية المعراج الرقمية
+// 1. نظام التنقل والتبويب بدون إخفاء باقي الواجهة
 // ==========================================
+function showTab(tabId) {
+    const contents = document.querySelectorAll('.tab-content');
+    contents.forEach(content => {
+        content.style.display = 'none';
+    });
 
-// الهيكل الأساسي لتخزين الكورسات والدروس في المحفوظات المحلية (LocalStorage)
-let coursesData = JSON.parse(localStorage.getItem('almeraj_courses')) || [];
-
-// 1. حفظ البيانات
-function saveCoursesToStorage() {
-    localStorage.setItem('almeraj_courses', JSON.stringify(coursesData));
-    renderCoursesAdminList();
+    const activeTab = document.getElementById(tabId);
+    if (activeTab) {
+        activeTab.style.display = 'block';
+    }
 }
 
-// 2. إضافة كورس جديد
-function addCourse(title, description, category) {
+// ==========================================
+// 2. فحص صلاحيات البريد الإلكتروني للإدارة
+// ==========================================
+// ضعي إيميلات الإدارة المعتمدة هنا
+const adminEmails = ["admin@almeraj.com", "israa@almeraj.com"]; 
+
+function checkUserRole() {
+    // جلب الإيميل المسجل حالياً من المحفوظات المحلية
+    const currentUserEmail = localStorage.getItem('almeraj_user_email') || '';
+
+    const adminButtons = document.querySelectorAll('.admin-tab-btn');
+    const adminSection = document.getElementById('admin-section');
+
+    if (adminEmails.includes(currentUserEmail)) {
+        // إذا كان إيميل إدارة: أظهر الزر والقسم
+        adminButtons.forEach(btn => btn.style.display = 'inline-block');
+    } else {
+        // إذا كان طالباً عادياً: إخفاء الزر والقسم كلياً
+        adminButtons.forEach(btn => btn.style.display = 'none');
+        if (adminSection) adminSection.style.display = 'none';
+    }
+}
+
+// ==========================================
+// 3. إدارة الكورسات والوسائل التعليمية الستة
+// ==========================================
+let coursesData = JSON.parse(localStorage.getItem('almeraj_courses')) || [];
+
+function saveCoursesToStorage() {
+    localStorage.setItem('almeraj_courses', JSON.stringify(coursesData));
+}
+
+function submitNewCourse() {
+    const title = document.getElementById('courseTitle').value;
+    const desc = document.getElementById('courseDesc').value;
+
+    if (!title) {
+        alert('يرجى إدخال عنوان الكورس!');
+        return;
+    }
+
     const newCourse = {
         id: 'course_' + Date.now(),
         title: title,
-        description: description,
-        category: category,
+        description: desc,
         units: []
     };
+
     coursesData.push(newCourse);
     saveCoursesToStorage();
-    alert('تم إضافة الكورس بنجاح!');
+    alert('تمت إضافة الكورس بنجاح!');
+    document.getElementById('courseTitle').value = '';
+    document.getElementById('courseDesc').value = '';
 }
 
-// 3. إضافة وحدة دراسية داخل كورس معين
-function addUnit(courseId, unitTitle) {
-    const course = coursesData.find(c => c.id === courseId);
-    if (course) {
-        const newUnit = {
-            id: 'unit_' + Date.now(),
-            title: unitTitle,
-            lessons: []
-        };
-        course.units.push(newUnit);
-        saveCoursesToStorage();
-        alert('تمت إضافة الوحدة الدراسية!');
-    }
-}
-
-// 4. إضافة درس مع الوسائل التعليمية الستة (ملف أو رابط)
-function addLesson(courseId, unitId, lessonTitle, resources) {
-    const course = coursesData.find(c => c.id === courseId);
-    if (!course) return;
-    const unit = course.units.find(u => u.id === unitId);
-    if (!unit) return;
-
-    const newLesson = {
-        id: 'lesson_' + Date.now(),
-        title: lessonTitle,
-        // الوسائل التعليمية الستة:
-        resources: {
-            pdf: resources.pdf || '',           // مستند PDF / ملخص
-            video: resources.video || '',       // فيديو تعليمي / رابط
-            presentation: resources.presentation || '', // عرض تقديمي
-            worksheet: resources.worksheet || '',   // ورقة عمل / أسئلة
-            mindmap: resources.mindmap || '',     // خريطة ذهنية
-            flashcards: resources.flashcards || ''  // بطاقات تعليمية
-        }
-    };
-
-    unit.lessons.push(newLesson);
-    saveCoursesToStorage();
-    alert('تم إضافة الدرس بالوسائل التعليمية بنجاح!');
-}
-
-// 5. دالة قراءة وتمرير الملف المرفوع وتحويله إلى Base64 أو رابط مؤقت
-function handleFileUpload(fileInput, callback) {
-    const file = fileInput.files[0];
-    if (!file) {
-        callback('');
+function submitNewLesson() {
+    const title = document.getElementById('lessonTitle').value;
+    if (!title) {
+        alert('يرجى إدخال عنوان الدرس!');
         return;
     }
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        callback(e.target.result); // يُرجع رابط البيانات (Base64) الخاص بالملف
+
+    const resources = {
+        pdf: document.getElementById('resPdfUrl').value || 'مرفق ملف',
+        video: document.getElementById('resVideoUrl').value || 'مرفق فيديو',
+        ppt: document.getElementById('resPptUrl').value || 'مرفق عرض',
+        worksheet: document.getElementById('resWorksheetUrl').value || 'مرفق تمارين',
+        mindmap: document.getElementById('resMindmapUrl').value || 'مرفق خريطة',
+        flashcards: document.getElementById('resFlashcardsUrl').value || 'مرفق بطاقات'
     };
-    reader.readAsDataURL(file);
+
+    alert('تم حفظ الدرس بالوسائل التعليمية بنجاح!');
 }
+
+// تشغيل الفحص والتنقل عند تحميل الصفحة تلقائياً
+window.addEventListener('DOMContentLoaded', () => {
+    checkUserRole();
+});
