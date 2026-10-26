@@ -1,72 +1,36 @@
-<!-- 1. شريط التنقل الثابت (يظهر دائماً ولن يختفي) -->
-<nav class="navigation-bar" style="position: sticky; top: 0; z-index: 1000; background: #0b132b; padding: 12px; display: flex; justify-content: center; gap: 15px;">
-    <button onclick="showTab('home-section')" style="padding: 8px 16px; cursor: pointer;">الرئيسية</button>
-    <button onclick="showTab('about-section')" style="padding: 8px 16px; cursor: pointer;">من نحن</button>
-    <button onclick="showTab('courses-section')" style="padding: 8px 16px; cursor: pointer;">الكورسات</button>
-    <!-- زر الإدارة: مخفي عن الطلاب وسيظهر تلقائياً لإيميلات الإدارة فقط -->
-    <button onclick="showTab('admin-section')" class="admin-tab-btn" style="display: none; padding: 8px 16px; background: #d9534f; color: white; border: none; border-radius: 4px; cursor: pointer;">لوحة الإدارة</button>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>أكاديمية المعراج الرقمي | Al-Me'raj Digital Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a1128">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Al-Me’raj">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+<header class="navbar"><div class="nav-in">
+<a href="#/" class="logo-brand" data-act="go" data-id="home"><img src="logo.png" alt="" width="40" height="40"><span class="brand-text"><span class="brand-title">أكاديمية المعراج الرقمي</span><span class="brand-subtitle">Al-Me'raj Digital Academy</span></span></a>
+</div></header>
+<main id="main" class="wrap"></main>
+<nav class="dock" aria-label="التنقل">
+<button class="dk si hidden" data-act="go" data-id="home"><i data-lucide="house"></i><span>الرئيسية</span></button>
+<button class="dk si hidden" data-act="go" data-id="courses"><i data-lucide="graduation-cap"></i><span>الكورسات</span></button>
+<button class="dk si hidden" data-act="go" data-id="about"><i data-lucide="info"></i><span>عن الأكاديمية</span></button>
+<a class="dk hidden" id="adm" href="#/admin"><i data-lucide="layout-dashboard"></i><span>الإدارة</span></a>
+<button class="dk hidden" id="inst" data-act="install"><i data-lucide="download"></i><span>تثبيت</span></button>
+<button class="dk si hidden" id="lo" data-act="logout"><i data-lucide="log-out"></i><span>خروج</span></button>
 </nav>
-
-<!-- 2. محتوى الأقسام (تظهر حسب التبويب المختار) -->
-
-<!-- قسم الرئيسية -->
-<div id="home-section" class="tab-content" style="display: block;">
-    <!-- اترك محتوى الصفحة الرئيسية القديم هنا كما هو -->
-</div>
-
-<!-- قسم من نحن -->
-<div id="about-section" class="tab-content" style="display: none;">
-    <!-- محتوى قسم من نحن -->
-</div>
-
-<!-- قسم الكورسات -->
-<div id="courses-section" class="tab-content" style="display: none;">
-    <!-- محتوى الكورسات -->
-</div>
-
-<!-- قسم لوحة الإدارة (خاص بالإدارة فقط) -->
-<div id="admin-section" class="tab-content" style="display: none; padding: 20px; color: #fff;">
-    <h2>لوحة إدارة الكورسات والدروس</h2>
-
-    <!-- إضافة كورس -->
-    <div class="admin-box" style="margin-bottom: 25px; border: 1px solid #333; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.05);">
-        <h3>1. إضافة كورس جديد</h3>
-        <input type="text" id="courseTitle" placeholder="عنوان الكورس" style="width: 100%; margin-bottom: 10px; padding: 8px;">
-        <textarea id="courseDesc" placeholder="وصف الكورس" style="width: 100%; margin-bottom: 10px; padding: 8px;"></textarea>
-        <button onclick="submitNewCourse()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">إضافة الكورس</button>
-    </div>
-
-    <!-- إضافة درس والوسائل الستة -->
-    <div class="admin-box" style="border: 1px solid #333; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.05);">
-        <h3>2. إضافة درس بالوسائل التعليمية الستة</h3>
-        <input type="text" id="lessonTitle" placeholder="عنوان الدرس" style="width: 100%; margin-bottom: 10px; padding: 8px;">
-
-        <h4 style="margin-top: 15px;">إرفاق الوسائل التعليمية الستة (ملف من الجهاز أو رابط):</h4>
-        
-        <p>1. ملف PDF / الملخص:</p>
-        <input type="file" id="resPdfFile" accept=".pdf">
-        <input type="url" id="resPdfUrl" placeholder="أو ضع رابط المستند هنا" style="width: 100%; margin-bottom: 10px; padding: 6px;">
-
-        <p>2. الفيديو التعليمي:</p>
-        <input type="file" id="resVideoFile" accept="video/*">
-        <input type="url" id="resVideoUrl" placeholder="أو ضع رابط الفيديو (YouTube/Drive)" style="width: 100%; margin-bottom: 10px; padding: 6px;">
-
-        <p>3. العرض التقديمي (PPTX/PDF):</p>
-        <input type="file" id="resPptFile">
-        <input type="url" id="resPptUrl" placeholder="أو ضع رابط العرض التقديمي" style="width: 100%; margin-bottom: 10px; padding: 6px;">
-
-        <p>4. ورقة العمل / التمارين:</p>
-        <input type="file" id="resWorksheetFile">
-        <input type="url" id="resWorksheetUrl" placeholder="أو ضع رابط التمارين" style="width: 100%; margin-bottom: 10px; padding: 6px;">
-
-        <p>5. الخريطة الذهنية:</p>
-        <input type="file" id="resMindmapFile">
-        <input type="url" id="resMindmapUrl" placeholder="أو ضع رابط الخريطة الذهنية" style="width: 100%; margin-bottom: 10px; padding: 6px;">
-
-        <p>6. البطاقات التعليمية (Flashcards):</p>
-        <input type="file" id="resFlashcardsFile">
-        <input type="url" id="resFlashcardsUrl" placeholder="أو ضع رابط البطاقات" style="width: 100%; margin-bottom: 10px; padding: 6px;">
-
-        <button onclick="submitNewLesson()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px;">حفظ الدرس بالوسائل</button>
-    </div>
-</div>
+<div id="modal" class="mdl hidden"><div class="mdl-in"><div class="mdl-h"><b id="mt"></b><a id="mo" target="_blank" rel="noopener" class="btn p"><i data-lucide="external-link"></i><span>فتح في تبويب</span></a><button class="btn" data-act="close" aria-label="إغلاق"><i data-lucide="x"></i></button></div><iframe id="mf" title="viewer"></iframe></div></div>
+<div id="tc"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
