@@ -32,14 +32,21 @@ async function enter(session){me=null;
  if(!session)return show(authV());
  if(!me||!(me.approved||me.is_admin))return show(pendV());
  await load();render()}
-async function load(){const {data,error}=await sb.from('categories').select('*,units(*)').order('pos');if(error)return toast('تعذر تحميل البيانات');cats=data.map(c=>({...c,units:c.units.sort((a,b)=>a.pos-b.pos)}))}
+let noLessons=false;
+async function load(){noLessons=false;let r=await sb.from('categories').select('*,units(*,lessons(*))').order('pos');
+ if(r.error){r=await sb.from('categories').select('*,units(*)').order('pos');noLessons=true}
+ if(r.error)return toast('تعذر تحميل البيانات');
+ cats=r.data.map(c=>({...c,units:c.units.sort((a,b)=>a.pos-b.pos).map(u=>({...u,lessons:(u.lessons||[]).sort((a,b)=>a.pos-b.pos)}))}))}
 
 /* ---------- Student views ---------- */
 const PAL=[['#4facfe','#00f2fe'],['#8b7bff','#4facfe'],['#00d4a8','#00f2fe'],['#f59e0b','#fb7185'],['#a78bfa','#22d3ee']];
 const WORDS=['البرمجة','مايكروسوفت أوفيس','إدارة التشغيل','مهارات التقنية'];
 const FEAT=[['file-text','ملخصات وبنك PDF','حقائب تعليمية شاملة ومصممة لكل وحدة دراسية جاهزة للتحميل والمذاكرة.'],['play-circle','شروحات فيديو تفاعلية','دروس مبسطة تغطي مفاهيم البرمجة وأساسيات إدارة وتشغيل الحاسوب.'],['list-checks','كويزات واختبارات ذاتية','تقييمات فورية بعد كل وحدة لمساعدتك على قياس فهمك وتثبيت معلوماتك.'],['network','خرائط ذهنية ومخططات','Diagrams وشروحات بصرية لتسهيل فهم الخوارزميات وبنية الأنظمة.']];
-const rowCard=(c,u,i)=>`<a class="row-card" href="#/unit/${c.id}/${u.id}"><span class="num">${i+1}</span><div class="cat-b"><b>${esc(u.title)}</b><small>${esc(u.descr)}</small></div>${I('chevron-left','chev')}</a>`;
-const home=()=>{const nu=cats.reduce((a,c)=>a+c.units.length,0);
+const LS=(c,u,l)=>UN(c,u)?.lessons?.find(x=>x.id===l);
+const cnt=r=>RES.filter(([k])=>hasRes(r?.[k])).length;
+const rowCard=(c,u,i)=>`<a class="row-card" href="#/unit/${c.id}/${u.id}"><span class="num">${i+1}</span><div class="cat-b"><b>${esc(u.title)}</b><small>${u.lessons?.length?u.lessons.length+' دروس · ':''}${esc(u.descr)}</small></div>${I('chevron-left','chev')}</a>`;
+const lessonCard=(c,u,l,i)=>`<a class="row-card" href="#/lesson/${c.id}/${u.id}/${l.id}"><span class="num">${i+1}</span><div class="cat-b"><b>${esc(l.title)}</b><small>${cnt(l.res)} من 6 وسائل${l.descr?' · '+esc(l.descr):''}</small></div>${I('chevron-left','chev')}</a>`;
+const home=()=>{const nu=cats.reduce((a,c)=>a+c.units.length,0),nl=cats.reduce((a,c)=>a+c.units.reduce((x,u)=>x+(u.lessons?.length||0),0),0);
 return`<section id="s-home" class="hero"><div class="rv"><span class="badge"><i></i>مرحبًا ${esc(me.name||'')} · منصتك التعليمية المتكاملة</span>
 <h1>ارتقِ بمهاراتك التقنية إلى آفاق جديدة مع <span class="gr">أكاديمية المعراج الرقمي</span></h1>
 <p class="lead">منصة شاملة لتأسيس وتدريب طلاب الحاسوب في مجالات البرمجة، إدارة التشغيل، وبرامج مايكروسوفت أوفيس بأحدث الأساليب التفاعلية.</p>
@@ -64,46 +71,67 @@ function fx(){const rv=[...document.querySelectorAll('.rv')];
  document.querySelectorAll('.count').forEach(el=>{const n=+el.dataset.n,t0=performance.now(),st=t=>{const p=Math.min(1,(t-t0)/1100);el.textContent=Math.round(n*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(st)};requestAnimationFrame(st)});
  clearInterval(rotT);const r=$('#rot');if(r){let i=0;rotT=setInterval(()=>{r.classList.add('out');setTimeout(()=>{i=(i+1)%WORDS.length;r.textContent=WORDS[i];r.classList.remove('out')},260)},2400)}}
 document.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.closest('.glow');if(!c)return;const b=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-b.left)+'px');c.style.setProperty('--my',(e.clientY-b.top)+'px')});
-function cat(id){const c=C(id);if(!c)return'<p>القسم غير موجود.</p>';
+function cat(id){const c=C(id);if(!c)return'<p>الكورس غير موجود.</p>';
 return crumb([[c.name]])+`<div class="row" style="gap:14px;margin-bottom:18px"><span class="tile lg">${I(esc(c.icon||'folder'))}</span><div><h1>${esc(c.name)}</h1><small>${c.units.length} وحدات</small></div></div><div class="grid">${c.units.map((u,i)=>rowCard(c,u,i)).join('')||'<p class="mu">لا توجد وحدات.</p>'}</div>`}
+const tiles=(res,onlyOn)=>RES.map(([k,lbl,ic,col])=>{const r=res?.[k]||{},on=hasRes(r);if(onlyOn&&!on)return'';return`<button class="res ${on?'':'off'}" style="--c:${col}" ${on?`data-act="open" data-k="${k}"`:'disabled'}><span class="tile">${I(ic)}</span><b>${esc(r.t||lbl)}</b><small>${on?lbl:'غير متاح بعد'}</small>${on?`<span class="go">${I('arrow-up-left')}</span>`:''}</button>`}).join('');
 async function unit(ci,ui){const c=C(ci),u=UN(ci,ui);if(!u)return'<p>الوحدة غير موجودة.</p>';
 const {data:cm}=await sb.from('comments').select('*').eq('unit_id',ui).order('created_at',{ascending:false});
-return crumb([[c.name,'#/cat/'+c.id],[u.title]])+`<h1>${esc(u.title)}</h1><p class="mu" style="margin:0 0 20px">${esc(u.descr)}</p>
-<div class="res-grid">${RES.map(([k,lbl,ic,col])=>{const r=u.res?.[k]||{},on=hasRes(r);return`<button class="res ${on?'':'off'}" style="--c:${col}" ${on?`data-act="open" data-k="${k}"`:'disabled'}><span class="tile">${I(ic)}</span><b>${esc(r.t||lbl)}</b><small>${on?lbl:'غير متاح بعد'}</small>${on?`<span class="go">${I('arrow-up-left')}</span>`:''}</button>`}).join('')}</div>
-<h2 class="sec">${I('messages-square')}النقاش (${cm?.length||0})</h2><div class="panel"><label>سؤالك أو تعليقك</label><textarea id="cm" rows="3"></textarea><button class="btn p" data-act="comment">${I('send')}إرسال</button></div>
+const hasU=cnt(u.res)>0,ls=u.lessons||[];
+return crumb([[c.name,'#/cat/'+c.id],[u.title]])+`<h1>${esc(u.title)}</h1><p class="mu" style="margin:0 0 20px">${esc(u.descr)}</p>`+
+(hasU?`<div class="res-grid">${tiles(u.res,true)}</div>`:'')+
+(ls.length?`<h2 class="sec">${I('book-open')}الدروس (${ls.length})</h2><div class="grid">${ls.map((l,i)=>lessonCard(c,u,l,i)).join('')}</div>`:'')+
+(!hasU&&!ls.length?'<p class="mu">لا يوجد محتوى في هذه الوحدة بعد.</p>':'')+
+`<h2 class="sec">${I('messages-square')}النقاش (${cm?.length||0})</h2><div class="panel"><label>سؤالك أو تعليقك</label><textarea id="cm" rows="3"></textarea><button class="btn p" data-act="comment">${I('send')}إرسال</button></div>
 ${(cm||[]).map(m=>`<div class="bub"><span class="av">${esc((m.name||'ط').trim().charAt(0))}</span><div style="flex:1;min-width:0"><div class="row sp"><b>${esc(m.name)}</b><small>${new Date(m.created_at).toLocaleDateString('ar')}</small></div><p style="margin:4px 0 0">${esc(m.body)}</p>${me.is_admin||m.user_id===me.id?`<button class="btn d" style="margin-top:8px;padding:4px 12px" data-act="cdel" data-id="${m.id}">حذف</button>`:''}</div></div>`).join('')}`}
+
+
+function lessonView(ci,ui,li){const c=C(ci),u=UN(ci,ui),l=LS(ci,ui,li);if(!l)return'<p>الدرس غير موجود.</p>';
+const ls=u.lessons,i=ls.indexOf(l),pv=ls[i-1],nx=ls[i+1];
+return crumb([[c.name,'#/cat/'+c.id],[u.title,'#/unit/'+c.id+'/'+u.id],[l.title]])+`<h1>${esc(l.title)}</h1><p class="mu" style="margin:0 0 20px">${esc(l.descr)}</p><div class="res-grid">${tiles(l.res,false)}</div>
+<div class="row sp" style="margin-top:22px">${pv?`<a class="btn" href="#/lesson/${c.id}/${u.id}/${pv.id}">→ ${esc(pv.title)}</a>`:'<span></span>'}${nx?`<a class="btn p" href="#/lesson/${c.id}/${u.id}/${nx.id}">${esc(nx.title)} ←</a>`:''}</div>
+<p style="margin-top:18px"><a class="btn" href="#/unit/${c.id}/${u.id}">${I('messages-square')}نقاش الوحدة</a></p>`}
 
 /* ---------- Open resources ---------- */
 function modal(title,url,html){$('#mt').textContent=title;const f=$('#mf');
  if(html!=null){f.removeAttribute('src');f.setAttribute('sandbox','allow-scripts allow-popups allow-forms allow-modals');f.srcdoc=html;$('#mo').classList.add('hidden')}
  else{f.removeAttribute('srcdoc');f.removeAttribute('sandbox');f.src=url;$('#mo').href=url;$('#mo').classList.remove('hidden')}
  $('#modal').classList.remove('hidden');icons()}
-async function openRes(k){const r=cur().res[k],lbl=RES.find(x=>x[0]===k)[1],t=r.t||lbl;
+async function openRes(k){const r=holder().res[k],lbl=RES.find(x=>x[0]===k)[1],t=r.t||lbl;
  if(r.path){toast('جارٍ التحميل…');const ext=r.path.split('.').pop().toLowerCase();
   if(ext==='html'||ext==='htm'){const {data,error}=await sb.storage.from(BK).download(r.path);if(error)return toast('تعذر فتح الملف');return modal(t,null,await data.text())}
   const {data,error}=await sb.storage.from(BK).createSignedUrl(r.path,3600);if(error)return toast('تعذر فتح الملف');return modal(t,data.signedUrl)}
  const u=r.u.trim();if(k==='pdf'||k==='mind')modal(t,u);else window.open(u,'_blank','noopener')}
 
 /* ---------- Admin ---------- */
-async function adminV(){const {data:st}=await sb.from('profiles').select('*').order('created_at',{ascending:false});const stu=(st||[]).filter(s=>!s.is_admin),nu=cats.reduce((a,c)=>a+c.units.length,0);
-return`<div class="row sp" style="margin-bottom:16px"><h1>لوحة الإدارة</h1><a class="btn p" href="#/admin/cat/new">${I('plus')}قسم جديد</a></div>
-<div class="stats"><div class="stat"><b>${stu.length}</b><small>الطلاب</small></div><div class="stat"><b>${stu.filter(s=>!s.approved).length}</b><small>بانتظار الموافقة</small></div><div class="stat"><b>${cats.length}</b><small>الأقسام</small></div><div class="stat"><b>${nu}</b><small>الوحدات</small></div></div>
+async function adminV(){const {data:st}=await sb.from('profiles').select('*').order('created_at',{ascending:false});const stu=(st||[]).filter(s=>!s.is_admin),nu=cats.reduce((a,c)=>a+c.units.length,0),nl=cats.reduce((a,c)=>a+c.units.reduce((x,u)=>x+(u.lessons?.length||0),0),0);
+return`<div class="row sp" style="margin-bottom:16px"><h1>لوحة الإدارة</h1><a class="btn p" href="#/admin/cat/new">${I('plus')}كورس جديد</a></div>
+${noLessons?`<div class="panel" style="border-color:#f59e0b"><b>⚠️ جدول الدروس غير موجود في قاعدة البيانات</b><p class="mu" style="margin:4px 0 0">شغّل ملف lessons.sql في Supabase (SQL Editor) ثم حدّث الصفحة لتفعيل الدروس.</p></div>`:''}
+<div class="stats"><div class="stat"><b>${stu.length}</b><small>الطلاب</small></div><div class="stat"><b>${stu.filter(s=>!s.approved).length}</b><small>بانتظار الموافقة</small></div><div class="stat"><b>${cats.length}</b><small>الكورسات</small></div><div class="stat"><b>${nu} / ${nl}</b><small>وحدات / دروس</small></div></div>
 <div class="panel"><div class="hd2">${I('users')}الطلاب</div>${stu.map(s=>`<div class="sep"><span><b>${esc(s.name||'—')}</b> ${s.approved?'':'<span class="tag w">بانتظار الموافقة</span>'}<br><small dir="ltr">${esc(s.email)} · ${esc(s.phone||'')}</small></span><button class="btn ${s.approved?'d':'p'}" data-act="appr" data-id="${s.id}" data-v="${!s.approved}">${s.approved?'إيقاف':'قبول'}</button></div>`).join('')||'<p class="mu">لا يوجد طلاب مسجلون بعد.</p>'}</div>
-<h2 class="sec">${I('folders')}الأقسام والمحتوى</h2>`+
-cats.map(c=>`<div class="panel"><div class="row sp"><b class="row">${I(esc(c.icon||'folder'))}${esc(c.name)}</b><div class="row"><a class="btn" href="#/admin/cat/${c.id}">${I('pencil')}تعديل</a><button class="btn d" data-act="cdelcat" data-id="${c.id}">${I('trash-2')}</button></div></div>${c.units.map(u=>`<div class="sep"><span>${esc(u.title)}</span><div class="row"><a class="btn" href="#/admin/unit/${c.id}/${u.id}">${I('pencil')}تعديل</a><button class="btn d" data-act="udel" data-id="${u.id}">${I('trash-2')}</button></div></div>`).join('')}<a class="btn" style="margin-top:6px" href="#/admin/unit/${c.id}/new">${I('plus')}وحدة جديدة</a></div>`).join('')}
-function catForm(id){const c=id==='new'?{name:'',icon:'folder'}:C(id);if(!c)return'<p>غير موجود</p>';return crumb([['الإدارة','#/admin'],[id==='new'?'قسم جديد':'تعديل قسم']])+`<div class="panel" style="max-width:520px"><label>اسم القسم</label><input id="f-n" value="${esc(c.name)}"><label>اسم الأيقونة (code, monitor, hard-drive, database, network, cpu, globe, shield)</label><input id="f-i" dir="ltr" value="${esc(c.icon)}"><button class="btn p" data-act="csave" data-id="${id}">حفظ</button></div>`}
+<h2 class="sec">${I('folders')}الكورسات والوحدات والدروس</h2>`+
+cats.map(c=>`<div class="panel"><div class="row sp"><b class="row">${I(esc(c.icon||'folder'))}${esc(c.name)} <span class="tag">كورس</span></b><div class="row"><a class="btn" href="#/admin/cat/${c.id}">${I('pencil')}تعديل</a><button class="btn d" data-act="cdelcat" data-id="${c.id}">${I('trash-2')}</button></div></div>
+${c.units.map(u=>`<div class="sep" style="align-items:flex-start"><div style="flex:1;min-width:210px"><b>${esc(u.title)}</b> <small>· وحدة${cnt(u.res)?' · '+cnt(u.res)+'/6 وسائل':''}</small>
+${u.lessons.map(l=>`<div class="sep" style="border-top:1px dashed var(--bd);padding:6px 0"><span>📘 ${esc(l.title)} <small>${cnt(l.res)}/6 وسائل</small></span><div class="row"><a class="btn" href="#/admin/lesson/${c.id}/${u.id}/${l.id}">${I('pencil')}تعديل</a><button class="btn d" data-act="ldel" data-id="${l.id}">${I('trash-2')}</button></div></div>`).join('')}
+<a class="btn" style="margin-top:6px" href="#/admin/lesson/${c.id}/${u.id}/new">${I('plus')}درس جديد</a></div>
+<div class="row"><a class="btn" href="#/admin/unit/${c.id}/${u.id}">${I('pencil')}تعديل الوحدة</a><button class="btn d" data-act="udel" data-id="${u.id}">${I('trash-2')}</button></div></div>`).join('')}
+<a class="btn" style="margin-top:8px" href="#/admin/unit/${c.id}/new">${I('plus')}وحدة جديدة</a></div>`).join('')}
+function catForm(id){const c=id==='new'?{name:'',icon:'folder'}:C(id);if(!c)return'<p>غير موجود</p>';return crumb([['الإدارة','#/admin'],[id==='new'?'كورس جديد':'تعديل كورس']])+`<div class="panel" style="max-width:520px"><label>اسم الكورس</label><input id="f-n" value="${esc(c.name)}"><label>اسم الأيقونة (code, monitor, hard-drive, database, network, cpu, globe, shield)</label><input id="f-i" dir="ltr" value="${esc(c.icon)}"><button class="btn p" data-act="csave" data-id="${id}">حفظ</button></div>`}
 const fileLbl=r=>r&&r.path?'📎 '+esc(r.fname||'ملف مرفوع'):'لم يُرفع ملف';
-function unitForm(ci,ui){const u=ui==='new'?{title:'',descr:'',res:{}}:UN(ci,ui);if(!u)return'<p>غير موجود</p>';
-draft=JSON.parse(JSON.stringify(u.res||{}));ukey=ui==='new'?'new-'+uid():ui;
-return crumb([['الإدارة','#/admin'],[ui==='new'?'وحدة جديدة':'تعديل وحدة']])+`<div class="panel"><label>عنوان الوحدة</label><input id="f-t" value="${esc(u.title)}"><label>وصف مختصر</label><input id="f-d" value="${esc(u.descr)}"></div>`+
-RES.map(([k,lbl,ic,col,acc,hint])=>`<div class="panel"><div class="hd2"><span class="tile" style="background:${col}1f;color:${col}">${I(ic)}</span>${lbl}</div><label>العنوان الظاهر للطالب</label><input data-t="${k}" value="${esc(u.res?.[k]?.t)}"><label>رابط (اختياري — يمكن أيضاً مسار ملف داخل الموقع مثل maps/unit1.html)</label><input data-u="${k}" dir="ltr" value="${esc(u.res?.[k]?.u)}"><div class="upl"><label class="btn" style="margin:0">${I('upload')}رفع ملف من الهاتف<input type="file" hidden data-f="${k}" accept="${acc}"></label><span id="fs-${k}" class="mu" style="font-size:13px">${fileLbl(draft[k])}</span><button class="btn d ${draft[k]?.path?'':'hidden'}" id="fr-${k}" data-act="frm" data-k="${k}">إزالة</button></div><p class="hint">${hint} إن وُجد ملف مرفوع فله الأولوية على الرابط.</p></div>`).join('')+`<button class="btn p" data-act="usave" data-c="${ci}" data-id="${ui}">${I('save')}حفظ الوحدة</button>`}
+function resEditor(res){draft=JSON.parse(JSON.stringify(res||{}));
+return RES.map(([k,lbl,ic,col,acc,hint])=>`<div class="panel"><div class="hd2"><span class="tile" style="background:${col}1f;color:${col}">${I(ic)}</span>${lbl}</div><label>العنوان الظاهر للطالب</label><input data-t="${k}" value="${esc(res?.[k]?.t)}"><label>رابط (اختياري — يمكن أيضاً مسار ملف داخل الموقع مثل maps/unit1.html)</label><input data-u="${k}" dir="ltr" value="${esc(res?.[k]?.u)}"><div class="upl"><label class="btn" style="margin:0">${I('upload')}رفع ملف من الهاتف<input type="file" hidden data-f="${k}" accept="${acc}"></label><span id="fs-${k}" class="mu" style="font-size:13px">${fileLbl(draft[k])}</span><button class="btn d ${draft[k]?.path?'':'hidden'}" id="fr-${k}" data-act="frm" data-k="${k}">إزالة</button></div><p class="hint">${hint} إن وُجد ملف مرفوع فله الأولوية على الرابط.</p></div>`).join('')}
+function collectRes(){const res={};RES.forEach(([k])=>res[k]={t:document.querySelector(`[data-t=${k}]`).value,u:document.querySelector(`[data-u=${k}]`).value,path:draft[k]?.path||'',fname:draft[k]?.fname||''});return res}
+function unitForm(ci,ui){const u=ui==='new'?{title:'',descr:'',res:{}}:UN(ci,ui);if(!u)return'<p>غير موجود</p>';ukey=ui==='new'?'new-'+uid():ui;
+return crumb([['الإدارة','#/admin'],[ui==='new'?'وحدة جديدة':'تعديل وحدة']])+`<div class="panel"><label>عنوان الوحدة</label><input id="f-t" value="${esc(u.title)}"><label>وصف مختصر</label><input id="f-d" value="${esc(u.descr)}"></div><h2 class="sec">${I('layers')}وسائل الوحدة نفسها (اختياري)</h2><p class="hint" style="margin-top:-6px">إن كانت للوحدة وسائل عامة (مثل الوحدة الأولى) املأها هنا، وإلا اتركها فارغة وأضف دروساً من لوحة الإدارة.</p>`+resEditor(u.res)+`<button class="btn p" data-act="usave" data-c="${ci}" data-id="${ui}">${I('save')}حفظ الوحدة</button>`}
+function lessonForm(ci,ui,li){const un=UN(ci,ui);if(!un)return'<p>الوحدة غير موجودة</p>';const l=li==='new'?{title:'',descr:'',res:{}}:LS(ci,ui,li);if(!l)return'<p>الدرس غير موجود</p>';ukey=li==='new'?'new-'+uid():li;
+return crumb([['الإدارة','#/admin'],[un.title],[li==='new'?'درس جديد':'تعديل درس']])+`<div class="panel"><label>عنوان الدرس</label><input id="f-t" value="${esc(l.title)}"><label>وصف مختصر</label><input id="f-d" value="${esc(l.descr)}"></div><h2 class="sec">${I('layers')}وسائل الدرس الست</h2>`+resEditor(l.res)+`<button class="btn p" data-act="lsave" data-c="${ci}" data-u="${ui}" data-id="${li}">${I('save')}حفظ الدرس</button>`}
 
 async function render(){if(!me)return;const p=(location.hash||'#/').slice(2).split('/');let h;
-if(p[0]==='cat')h=cat(p[1]);else if(p[0]==='unit')h=await unit(p[1],p[2]);
-else if(p[0]==='admin')h=!me.is_admin?'<p>غير مصرح لك.</p>':p[1]==='cat'?catForm(p[2]):p[1]==='unit'?unitForm(p[2],p[3]):await adminV();else h=home();
+if(p[0]==='cat')h=cat(p[1]);else if(p[0]==='unit')h=await unit(p[1],p[2]);else if(p[0]==='lesson')h=lessonView(p[1],p[2],p[3]);
+else if(p[0]==='admin')h=!me.is_admin?'<p>غير مصرح لك.</p>':p[1]==='cat'?catForm(p[2]):p[1]==='unit'?unitForm(p[2],p[3]):p[1]==='lesson'?lessonForm(p[2],p[3],p[4]):await adminV();else h=home();
 show(h);if(pend){const t=pend;pend=null;setTimeout(()=>scrollToId(t),80)}else scrollTo(0,0);fx()}
 addEventListener('hashchange',render);
 const cur=()=>{const p=location.hash.split('/');return UN(p[2],p[3])};
+const holder=()=>{const p=location.hash.split('/');return p[1]==='lesson'?LS(p[2],p[3],p[4]):UN(p[2],p[3])};
 const fail=(r,ok)=>{if(r.error){toast('تعذر الحفظ: '+r.error.message);return true}toast(ok);return false};
 
 document.addEventListener('change',async e=>{const i=e.target.closest('[data-f]');if(!i||!i.files[0])return;const k=i.dataset.f,f=i.files[0];
@@ -130,18 +158,20 @@ else if(a==='close'){$('#modal').classList.add('hidden');const f=$('#mf');f.remo
 else if(a==='comment'){const t=$('#cm').value.trim();if(!t)return toast('اكتب تعليقك أولاً');if(!fail(await sb.from('comments').insert({unit_id:cur().id,user_id:me.id,name:me.name||'طالب',body:t}),'تمت إضافة التعليق'))render()}
 else if(a==='cdel'){await sb.from('comments').delete().eq('id',d.id);render()}
 else if(a==='appr'){if(!fail(await sb.from('profiles').update({approved:d.v==='true'}).eq('id',d.id),'تم التحديث'))render()}
-else if(a==='cdelcat'){if(confirm('حذف القسم وكل وحداته؟')&&!fail(await sb.from('categories').delete().eq('id',d.id),'تم الحذف')){await load();render()}}
-else if(a==='udel'){if(confirm('حذف الوحدة؟')&&!fail(await sb.from('units').delete().eq('id',d.id),'تم الحذف')){await load();render()}}
+else if(a==='cdelcat'){if(confirm('حذف الكورس وكل وحداته ودروسه؟')&&!fail(await sb.from('categories').delete().eq('id',d.id),'تم الحذف')){await load();render()}}
+else if(a==='udel'){if(confirm('حذف الوحدة وكل دروسها؟')&&!fail(await sb.from('units').delete().eq('id',d.id),'تم الحذف')){await load();render()}}
 else if(a==='frm'){const k=d.k;if(draft[k]?.path)sb.storage.from(BK).remove([draft[k].path]);if(draft[k]){delete draft[k].path;delete draft[k].fname}$('#fs-'+k).textContent='لم يُرفع ملف';b.classList.add('hidden');toast('أُزيل الملف — اضغط «حفظ الوحدة»')}
 else if(a==='csave'){const n=$('#f-n').value.trim();if(!n)return toast('الاسم مطلوب');const v={name:n,icon:$('#f-i').value.trim()||'folder'};
  const r=d.id==='new'?await sb.from('categories').insert({...v,pos:cats.length}):await sb.from('categories').update(v).eq('id',d.id);if(!fail(r,'تم الحفظ')){await load();location.hash='#/admin'}}
-else if(a==='usave'){const t=$('#f-t').value.trim();if(!t)return toast('العنوان مطلوب');const res={};
- RES.forEach(([k])=>res[k]={t:document.querySelector(`[data-t=${k}]`).value,u:document.querySelector(`[data-u=${k}]`).value,path:draft[k]?.path||'',fname:draft[k]?.fname||''});const v={title:t,descr:$('#f-d').value,res};
+else if(a==='usave'){const t=$('#f-t').value.trim();if(!t)return toast('العنوان مطلوب');const v={title:t,descr:$('#f-d').value,res:collectRes()};
  const r=d.id==='new'?await sb.from('units').insert({...v,cat_id:d.c,pos:C(d.c).units.length}):await sb.from('units').update(v).eq('id',d.id);if(!fail(r,'تم حفظ الوحدة')){await load();location.hash='#/admin'}}
+else if(a==='lsave'){const t=$('#f-t').value.trim();if(!t)return toast('العنوان مطلوب');const v={title:t,descr:$('#f-d').value,res:collectRes()};
+ const r=d.id==='new'?await sb.from('lessons').insert({...v,unit_id:d.u,pos:UN(d.c,d.u).lessons.length}):await sb.from('lessons').update(v).eq('id',d.id);if(!fail(r,'تم حفظ الدرس')){await load();location.hash='#/admin'}}
+else if(a==='ldel'){if(confirm('حذف الدرس؟')&&!fail(await sb.from('lessons').delete().eq('id',d.id),'تم الحذف')){await load();render()}}
 });
 document.addEventListener('input',e=>{if(e.target.id!=='q')return;const q=e.target.value.trim().toLowerCase(),out=[];
- cats.forEach(c=>c.units.forEach((u,i)=>{if((u.title+' '+u.descr+' '+c.name).toLowerCase().includes(q))out.push([c,u,i])}));
- $('#cg').classList.toggle('hidden',!!q);$('#sr').innerHTML=q?`<h2 class="sec">${I('search')}نتائج البحث (${out.length})</h2><div class="grid">${out.map(([c,u,i])=>rowCard(c,u,i)).join('')||'<p class="mu">لا توجد نتائج.</p>'}</div>`:'';icons()});
+ cats.forEach(c=>c.units.forEach((u,i)=>{if((u.title+' '+u.descr+' '+c.name).toLowerCase().includes(q))out.push(rowCard(c,u,i));(u.lessons||[]).forEach((l,j)=>{if((l.title+' '+(l.descr||'')+' '+u.title).toLowerCase().includes(q))out.push(lessonCard(c,u,l,j))})}));
+ $('#cg').classList.toggle('hidden',!!q);$('#sr').innerHTML=q?`<h2 class="sec">${I('search')}نتائج البحث (${out.length})</h2><div class="grid">${out.join('')||'<p class="mu">لا توجد نتائج.</p>'}</div>`:'';icons()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelector('[data-act=close]').click()});
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#inst').classList.remove('hidden')});
 if(/iphone|ipad/i.test(navigator.userAgent)&&!navigator.standalone)$('#inst').classList.remove('hidden');
